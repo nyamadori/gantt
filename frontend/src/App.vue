@@ -32,6 +32,7 @@ html {
   font-size: 12pt;
 }
 
+/* TODO bad naming */
 .schedule-strip-header, .schedule-strip-cells {
   position: relative;
   width: 100%;
@@ -57,10 +58,10 @@ html {
 }
 
 .schedule-strip-header {
-  height: 24px;
+  height: 18px;
 }
 
 .schedule-strip-header > .cell {
-  height: 24px;
+  height: 18px;
 }
 </style>

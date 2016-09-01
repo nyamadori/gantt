@@ -6,9 +6,9 @@
       </div>
     </div>
 
-    <!-- <div class="schedule-strip-cells">
+    <div class="schedule-strip-cells">
       <div v-for="x in showDates" class="cell"></div>
-    </div> -->
+    </div>
   </div>
 
   <schedule-strip-row
@@ -74,7 +74,7 @@ export default {
     length () {
       const start = moment(this.schedule.startOn)
       const end = moment(this.schedule.endOn)
-      return end.diff(start, 'days')
+      return end.diff(start, 'days') + 1
     },
 
     stripStyle () {
@@ -94,12 +94,6 @@ export default {
       const start = moment(this.schedule.startOn)
       const showRangeStart = moment(this.showRange.start)
       return start.diff(showRangeStart, 'days')
-    }
-  },
-
-  methods: {
-    getDateFromIndex (i) {
-
     }
   }
 }

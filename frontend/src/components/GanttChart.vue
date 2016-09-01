@@ -38,7 +38,6 @@
 .header {
   text-align: center;
 }
-
 </style>
 
 <script>

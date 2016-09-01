@@ -3,7 +3,7 @@ import moment from 'moment'
 export function showRangeLength (state) {
   const start = moment(state.showRange.start)
   const end = moment(state.showRange.end)
-  return end.diff(start, 'days') + 1
+  return end.diff(start, 'days')
 }
 
 export function schedules (state) {
@@ -20,7 +20,7 @@ export function showDates (state) {
   const result = []
 
   for (var i = 0; i < len; i++) {
-    result.push(moment(start).add(i, 'days'))
+    result.push(moment(start).add(i, 'days').format())
   }
 
   return result
@@ -31,20 +31,18 @@ export function showMonths (state) {
   var rangeStart = moment(state.showRange.start)
   var rangeEnd = moment(state.showRange.end)
 
-  var start = rangeStart.clone()
+  var end = rangeStart.clone().month(rangeStart.month() + 1).date(1)
+  result.push({ start: rangeStart.clone().format(), end: end.format() })
 
   while (true) {
-    var end = start.clone().add(1, 'months').date(1) // start の次月はじめ
-    console.log(start, end)
+    var start = end
 
-    if (end.isAfter(rangeEnd)) {
-      result.push([start, rangeEnd.clone()])
+    if (end.isSameOrAfter(rangeEnd)) {
       break
     } else {
-      result.push([start, end])
+      end = start.clone().add(1, 'months')
+      result.push({ start: start.format(), end: end.format() })
     }
-
-    start = end
   }
 
   return result

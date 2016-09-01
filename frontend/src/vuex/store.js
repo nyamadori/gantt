@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import moment from 'moment'
 import mutations from './mutations'
 
 Vue.use(Vuex)
@@ -55,8 +56,8 @@ const state = {
   ],
 
   showRange: {
-    start: '2016-08-01',
-    end: '2016-10-01'
+    start: moment('2016-08-01').format(),
+    end: moment('2016-10-01').format()
   }
 }
 
