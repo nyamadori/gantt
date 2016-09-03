@@ -4,12 +4,23 @@
       class="schedule-strip" draggable="true"
       v-if="!isRoot" :style="[stripStyle]"
       @dragstart="onStripDragStart" @drag="onStripDrag" @dragend="onStripDragEnd">
+      <div
+        class="handle left"
+        @click="onClick"
+        @dragstart="onHandleDragStart"
+        @drag="onHandleDrag"
+        @dragend="onHandleDragEnd"></div>
       <div class="schedule-strip-box">
         <div class="title">{{ schedule.title }}</div>
       </div>
+      <div
+        class="handle right"
+        @dragstart="onHandleDragStart"
+        @drag="onHandleDrag"
+        @dragend="onHandleDragEnd"></div>
     </div>
 
-    <div class="schedule-strip drop-target" v-show="showDropTarget" :style="[stripStyle, dropTargetStyle]">
+    <div class="schedule-strip drop-target" v-if="showDropTarget" :style="[stripStyle, dropTargetStyle]">
       <div class="schedule-strip-box">
         <div class="title">{{ schedule.title }}</div>
       </div>
@@ -98,21 +109,38 @@ export default {
     onStripDragStart (e) {
       e.target.style.opacity = 0
       this.dragging = true
-      this.dragStartX = e.x
+      this.dragStartX = e.pageX
+      this.dayOffset = 0
     },
 
     onStripDrag (e) {
-      this.cursorOffsetX = e.x - this.dragStartX - 16
+      if (e.pageX === 0 && e.pageY === 0) {
+        this.move(this.dayOffset)
+        return
+      }
+
+      this.cursorOffsetX = e.pageX - this.dragStartX - 16
       this.dayOffset = parseInt(this.cursorOffsetX / 32)
-      console.log(this.dayOffset)
     },
 
     onStripDragEnd (e) {
-      this.cursorOffsetX = e.x - this.dragStartX - 16
-      this.dayOffset = parseInt(this.cursorOffsetX / 32)
-      // console.log(this.dayOffset)
-      this.move(this.dayOffset)
       e.target.style.opacity = 1
+      this.dragging = false
+    },
+
+    onHandleDragStart (e) {
+      this.dayOffset = 0
+      this.dragStartX = e.pageX
+      this.dragging = true
+      console.log(this.dayOffset)
+    },
+
+    onHandleDrag (e) {
+      this.cursorOffsetX = e.pageX - this.dragStartX - 16
+      this.dayOffset = parseInt(this.cursorOffsetX / 32)
+    },
+
+    onHandleDragEnd (e) {
       this.dragging = false
     },
 
@@ -137,8 +165,26 @@ export default {
   position: absolute;
   align-items:center;
   height: 40px;
-  padding: 4px;
+  padding: 4px 0;
   z-index: 5;
+}
+
+.schedule-strip > .handle {
+  position: absolute;
+  width: 4px;
+  height: 32px;
+  background-color: #ddd;
+  z-index: 15;
+}
+
+.schedule-strip > .handle.left {
+  cursor: w-resize;
+  left: 0;
+}
+
+.schedule-strip > .handle.right {
+  cursor: e-resize;
+  right: 0;
 }
 
 .schedule-strip-box {
@@ -152,6 +198,7 @@ export default {
   border-radius: 4px;
   font-size: 0.8rem;
   align-items: center;
+  cursor: move;
 }
 
 .schedule-strip.drop-target {
