@@ -55,9 +55,16 @@ const state = {
     }
   ],
 
-  showRange: {
-    start: moment('2016-08-01').format(),
-    end: moment('2016-10-01').format()
+  view: {
+    range: {
+      start: moment('2016-08-01').format(),
+      end: moment('2016-10-01').format()
+    },
+
+    cell: {
+      width: 40,
+      height: 40
+    }
   }
 }
 

@@ -4,9 +4,9 @@
       <schedule :schedule="schedules[0]"></schedule>
     </div>
 
-    <div class="schedule-strip-rows">
-      <schedule-strip-header></schedule-strip-header>
-      <schedule-strip-row :schedule="schedules[0]"></schedule-strip-row>
+    <div class="schedule-table-rows">
+      <schedule-table-header></schedule-table-header>
+      <schedule-table-row :schedule="schedules[0]"></schedule-table-row>
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@
   box-shadow: 1px 0 3px rgba(0, 0, 0, 0.5);
 }
 
-.schedule-strip-rows {
+.schedule-table-rows {
   position: absolute;
   left: 240px;
   width: calc(100% - 240px);
@@ -42,19 +42,18 @@
 
 <script>
 import Schedule from './Schedule'
-import ScheduleStripRow from './ScheduleStripRow'
-import ScheduleStripHeader from './ScheduleStripHeader'
-
-import { schedules, showRangeLength, showRange } from '../vuex/getters'
+import ScheduleTableRow from './ScheduleTableRow'
+import ScheduleTableHeader from './ScheduleTableHeader'
+import { schedules } from '../vuex/getters'
 
 export default {
   vuex: {
-    getters: { schedules, showRangeLength, showRange }
+    getters: { schedules }
   },
   components: {
     Schedule,
-    ScheduleStripRow,
-    ScheduleStripHeader
+    ScheduleTableRow,
+    ScheduleTableHeader
   }
 }
 </script>

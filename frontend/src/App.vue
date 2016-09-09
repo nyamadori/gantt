@@ -33,7 +33,7 @@ html {
 }
 
 /* TODO bad naming */
-.schedule-strip-header, .schedule-strip-cells {
+.schedule-table-header, .schedule-table-cells {
   position: relative;
   width: 100%;
   height: 40px;
@@ -41,15 +41,15 @@ html {
   text-align: center;
 }
 
-.schedule-strip-header:after,
-.schedule-strip-cells:after {
+.schedule-table-header:after,
+.schedule-table-cells:after {
   display: '';
   clear: both;
   content: '';
 }
 
-.schedule-strip-header > .cell,
-.schedule-strip-cells > .cell {
+.schedule-table-header > .cell,
+.schedule-table-cells > .cell {
   width: 32px;
   height: 40px;
   float: left;
@@ -57,11 +57,11 @@ html {
   border-bottom: 1px solid #ddd;
 }
 
-.schedule-strip-header {
+.schedule-table-header {
   height: 18px;
 }
 
-.schedule-strip-header > .cell {
+.schedule-table-header > .cell {
   height: 18px;
 }
 </style>

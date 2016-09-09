@@ -1,8 +1,8 @@
 import moment from 'moment'
 
-export function showRangeLength (state) {
-  const start = moment(state.showRange.start)
-  const end = moment(state.showRange.end)
+export function viewRangeLength (state) {
+  const start = moment(state.view.range.start)
+  const end = moment(state.view.range.end)
   return end.diff(start, 'days')
 }
 
@@ -10,13 +10,9 @@ export function schedules (state) {
   return state.schedules
 }
 
-export function showRange (state) {
-  return state.showRange
-}
-
-export function showDates (state) {
-  const len = showRangeLength(state)
-  const start = showRange(state).start
+export function viewDates (state) {
+  const len = viewRangeLength(state)
+  const start = state.view.range.start
   const result = []
 
   for (var i = 0; i < len; i++) {
@@ -26,10 +22,10 @@ export function showDates (state) {
   return result
 }
 
-export function showMonths (state) {
+export function viewMonths (state) {
   var result = []
-  var rangeStart = moment(state.showRange.start)
-  var rangeEnd = moment(state.showRange.end)
+  var rangeStart = moment(state.view.range.start)
+  var rangeEnd = moment(state.view.range.end)
 
   var end = rangeStart.clone().month(rangeStart.month() + 1).date(1)
   result.push({ start: rangeStart.clone().format(), end: end.format() })
@@ -46,4 +42,8 @@ export function showMonths (state) {
   }
 
   return result
+}
+
+export function viewCell (state) {
+  return state.view.cell
 }

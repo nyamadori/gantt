@@ -1,6 +1,13 @@
 <template>
-  <div class="schedule-row" v-if="!isRoot" :style="[rowStyle]">
-    <div
+  <div class="schedule-table-row" v-if="!isRoot" :style="[rowStyle]">
+    <schedule-table-handle
+      :date="schedule.startOn"></schedule-table-handle>
+    <schedule-table-handle
+      :date="schedule.startOn"
+      :attach="'left'"></schedule-table-handle>
+    <schedule-table-handle
+      :date="schedule.endOn"></schedule-table-handle>
+    <!-- <div
       class="schedule-strip" draggable="true"
       v-if="!isRoot" :style="[stripStyle]"
       @dragstart="onStripDragStart" @drag="onStripDrag" @dragend="onStripDragEnd">
@@ -24,31 +31,36 @@
       <div class="schedule-strip-box">
         <div class="title">{{ schedule.title }}</div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="schedule-strip-cells">
-      <div v-for="x in showDates" class="cell"></div>
+    <div class="schedule-table-cells">
+      <div v-for="x in viewDates" class="cell"></div>
     </div>
   </div>
 
-  <schedule-strip-row
+  <schedule-table-row
     v-for="schedule in schedule.children | orderBy compareSchedule"
-    :schedule="schedule"></schedule-strip-row>
+    :schedule="schedule"></schedule-table-row>
 </template>
 
 <script>
 import moment from 'moment'
+import ScheduleTableHandle from './ScheduleTableHandle'
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import ScheduleItem from '../mixins/ScheduleItem'
-import { showRange, showRangeLength, showDates } from '../vuex/getters'
+import { viewRangeLength, viewDates } from '../vuex/getters'
 import { setSchedule } from '../vuex/actions'
 
 export default {
   mixins: [ScheduleItem, ScheduleComparable],
-  name: 'schedule-strip-row',
+  name: 'schedule-table-row',
+
+  components: {
+    ScheduleTableHandle
+  },
 
   vuex: {
-    getters: { showRange, showRangeLength, showDates },
+    getters: { viewRangeLength, viewDates },
     actions: { setSchedule }
   },
 
@@ -57,7 +69,12 @@ export default {
   },
 
   data () {
-    return { dragging: false, dragStartX: 0, cursorOffsetX: 0, dayOffset: 0 }
+    return {
+      dragging: false,
+      dragStartX: 0,
+      cursorOffsetX: 0,
+      dayOffset: 0
+    }
   },
 
   computed: {
@@ -67,37 +84,16 @@ export default {
       return end.diff(start, 'days') + 1
     },
 
-    stripX () {
-      return this.date * 32
-    },
-
-    stripWidth () {
-      return this.length * 32
-    },
-
-    stripStyle () {
-      return {
-        left: this.stripX + 'px',
-        width: this.stripWidth + 'px'
-      }
+    scheduleStartFromviewRange () {
+      const start = moment(this.schedule.startOn)
+      const viewRangeStart = moment(this.view.range.start)
+      return start.diff(viewRangeStart, 'days')
     },
 
     rowStyle () {
       return {
-        width: this.showRangeLength * 32 + 'px'
+        width: this.viewRangeLength * 32 + 'px'
       }
-    },
-
-    dropTargetStyle () {
-      return {
-        left: (this.stripX + this.dayOffset * 32) + 'px'
-      }
-    },
-
-    date () {
-      const start = moment(this.schedule.startOn)
-      const showRangeStart = moment(this.showRange.start)
-      return start.diff(showRangeStart, 'days')
     },
 
     showDropTarget () {
@@ -106,35 +102,6 @@ export default {
   },
 
   methods: {
-    onStripDragStart (e) {
-      e.target.style.opacity = 0
-      this.dragging = true
-      this.dragStartX = e.pageX
-      this.dayOffset = 0
-    },
-
-    onStripDrag (e) {
-      if (e.pageX === 0 && e.pageY === 0) {
-        this.move(this.dayOffset)
-        return
-      }
-
-      this.cursorOffsetX = e.pageX - this.dragStartX - 16
-      this.dayOffset = parseInt(this.cursorOffsetX / 32)
-    },
-
-    onStripDragEnd (e) {
-      e.target.style.opacity = 1
-      this.dragging = false
-    },
-
-    onHandleDragStart (e) {
-      this.dayOffset = 0
-      this.dragStartX = e.pageX
-      this.dragging = true
-      console.log(this.dayOffset)
-    },
-
     onHandleDrag (e) {
       this.cursorOffsetX = e.pageX - this.dragStartX - 16
       this.dayOffset = parseInt(this.cursorOffsetX / 32)
@@ -153,41 +120,23 @@ export default {
 </script>
 
 <style scoped>
-.schedule-row {
+.schedule-table-row {
   position: relative;
   line-height: 1;
   height: 40px;
   border-bottom: 1px solid #ddd;
 }
-
-.schedule-strip {
+/*
+.schedule-table-row {
   display: flex;
   position: absolute;
   align-items:center;
   height: 40px;
   padding: 4px 0;
   z-index: 5;
-}
+}*/
 
-.schedule-strip > .handle {
-  position: absolute;
-  width: 4px;
-  height: 32px;
-  background-color: #ddd;
-  z-index: 15;
-}
-
-.schedule-strip > .handle.left {
-  cursor: w-resize;
-  left: 0;
-}
-
-.schedule-strip > .handle.right {
-  cursor: e-resize;
-  right: 0;
-}
-
-.schedule-strip-box {
+.schedule-table-row-box {
   display: flex;
   top: 0;
   height: 32px;
@@ -201,11 +150,11 @@ export default {
   cursor: move;
 }
 
-.schedule-strip.drop-target {
+.schedule-table-row.drop-target {
   z-index: 4;
 }
 
-.schedule-strip.drop-target > .schedule-strip-box {
+.schedule-table-row.drop-target > .schedule-table-row-box {
   /*border: 1px dashed #000;*/
   /*background-color: transparent;*/
 }

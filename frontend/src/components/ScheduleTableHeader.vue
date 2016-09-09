@@ -1,14 +1,14 @@
 <template>
-  <div class="schedule-strip-header" :style="[headerStyle]">
+  <div class="schedule-table-header" :style="[headerStyle]">
     <div
       :style="[dayHeaderStyle(month)]"
-      v-for="month in showMonths" class="cell">
+      v-for="month in viewMonths" class="cell">
       {{ month.start | format 'YYYY/MM' }}
     </div>
   </div>
 
-  <div class="schedule-strip-header" :style="[headerStyle]">
-    <div v-for="date in showDates" class="cell">{{ date | format 'D' }}</div>
+  <div class="schedule-table-header" :style="[headerStyle]">
+    <div v-for="date in viewDates" class="cell">{{ date | format 'D' }}</div>
   </div>
 </template>
 
@@ -18,12 +18,12 @@
 
 <script>
 import moment from 'moment'
-import { showDates, showRangeLength, showMonths } from '../vuex/getters'
+import { viewDates, viewRangeLength, viewMonths } from '../vuex/getters'
 
 export default {
   vuex: {
     getters: {
-      showDates, showRangeLength, showMonths
+      viewDates, viewRangeLength, viewMonths
     }
   },
 
@@ -36,7 +36,7 @@ export default {
   computed: {
     headerStyle () {
       return {
-        width: this.showRangeLength * 32 + 'px'
+        width: this.viewRangeLength * 32 + 'px'
       }
     }
   },
