@@ -36,7 +36,6 @@ html {
 .schedule-table-header, .schedule-table-cells {
   position: relative;
   width: 100%;
-  height: 40px;
   font-size: 0.8rem;
   text-align: center;
 }
@@ -50,18 +49,8 @@ html {
 
 .schedule-table-header > .cell,
 .schedule-table-cells > .cell {
-  width: 32px;
-  height: 40px;
   float: left;
   border-right: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
-}
-
-.schedule-table-header {
-  height: 18px;
-}
-
-.schedule-table-header > .cell {
-  height: 18px;
 }
 </style>

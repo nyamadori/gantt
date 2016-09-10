@@ -1,5 +1,9 @@
 import moment from 'moment'
 
+export function viewRange (state) {
+  return state.view.range
+}
+
 export function viewRangeLength (state) {
   const start = moment(state.view.range.start)
   const end = moment(state.view.range.end)
@@ -46,4 +50,8 @@ export function viewMonths (state) {
 
 export function viewCell (state) {
   return state.view.cell
+}
+
+export function viewHeader (state) {
+  return state.view.header
 }

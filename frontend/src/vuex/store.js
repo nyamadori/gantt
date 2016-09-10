@@ -62,8 +62,12 @@ const state = {
     },
 
     cell: {
-      width: 40,
+      width: 50,
       height: 40
+    },
+
+    header: {
+      height: 18
     }
   }
 }

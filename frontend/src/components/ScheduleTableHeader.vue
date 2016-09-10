@@ -1,14 +1,17 @@
 <template>
-  <div class="schedule-table-header" :style="[headerStyle]">
+  <div class="schedule-table-header" :style="[headerRowStyle]">
     <div
-      :style="[dayHeaderStyle(month)]"
+      :style="[headerCellStyle, monthHeaderCellStyle(month)]"
       v-for="month in viewMonths" class="cell">
       {{ month.start | format 'YYYY/MM' }}
     </div>
   </div>
 
-  <div class="schedule-table-header" :style="[headerStyle]">
-    <div v-for="date in viewDates" class="cell">{{ date | format 'D' }}</div>
+  <div class="schedule-table-header" :style="[headerRowStyle]">
+    <div
+      v-for="date in viewDates"
+      class="cell"
+      :style="[headerCellStyle]">{{ date | format 'D' }}</div>
   </div>
 </template>
 
@@ -18,12 +21,12 @@
 
 <script>
 import moment from 'moment'
-import { viewDates, viewRangeLength, viewMonths } from '../vuex/getters'
+import { viewCell, viewDates, viewRangeLength, viewMonths, viewHeader } from '../vuex/getters'
 
 export default {
   vuex: {
     getters: {
-      viewDates, viewRangeLength, viewMonths
+      viewCell, viewDates, viewRangeLength, viewMonths, viewHeader
     }
   },
 
@@ -34,17 +37,25 @@ export default {
   },
 
   computed: {
-    headerStyle () {
+    headerRowStyle () {
       return {
-        width: this.viewRangeLength * 32 + 'px'
+        width: this.viewRangeLength * this.viewCell.width + 'px',
+        height: this.viewHeader.height + 'px'
+      }
+    },
+
+    headerCellStyle () {
+      return {
+        width: this.viewCell.width + 'px',
+        height: this.viewHeader.height + 'px'
       }
     }
   },
 
   methods: {
-    dayHeaderStyle (month) {
+    monthHeaderCellStyle (month) {
       const days = moment(month.end).diff(moment(month.start), 'days')
-      return { width: days * 32 + 'px' }
+      return { width: days * this.viewCell.width + 'px' }
     }
   }
 }

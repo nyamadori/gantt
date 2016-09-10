@@ -34,7 +34,7 @@
     </div> -->
 
     <div class="schedule-table-cells">
-      <div v-for="x in viewDates" class="cell"></div>
+      <div v-for="x in viewDates" class="cell" :style="[cellStyle]"></div>
     </div>
   </div>
 
@@ -48,7 +48,7 @@ import moment from 'moment'
 import ScheduleTableHandle from './ScheduleTableHandle'
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import ScheduleItem from '../mixins/ScheduleItem'
-import { viewRangeLength, viewDates } from '../vuex/getters'
+import { viewRangeLength, viewDates, viewCell } from '../vuex/getters'
 import { setSchedule } from '../vuex/actions'
 
 export default {
@@ -60,7 +60,7 @@ export default {
   },
 
   vuex: {
-    getters: { viewRangeLength, viewDates },
+    getters: { viewRangeLength, viewDates, viewCell },
     actions: { setSchedule }
   },
 
@@ -92,7 +92,14 @@ export default {
 
     rowStyle () {
       return {
-        width: this.viewRangeLength * 32 + 'px'
+        width: this.viewRangeLength * this.viewCell.width + 'px'
+      }
+    },
+
+    cellStyle () {
+      return {
+        width: this.viewCell.width + 'px',
+        height: this.viewCell.height + 'px'
       }
     },
 
@@ -104,7 +111,7 @@ export default {
   methods: {
     onHandleDrag (e) {
       this.cursorOffsetX = e.pageX - this.dragStartX - 16
-      this.dayOffset = parseInt(this.cursorOffsetX / 32)
+      this.dayOffset = parseInt(this.cursorOffsetX / this.viewCell.width)
     },
 
     onHandleDragEnd (e) {
@@ -126,6 +133,7 @@ export default {
   height: 40px;
   border-bottom: 1px solid #ddd;
 }
+
 /*
 .schedule-table-row {
   display: flex;
