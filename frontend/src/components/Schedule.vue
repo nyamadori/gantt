@@ -1,20 +1,9 @@
 <template>
-  <div class="schedule" v-if="!isRoot">
+  <div class="schedule">
     <div class="schedule-title">
       {{ schedule.title }}
     </div>
-
-    <div class="children">
-      <schedule
-        v-for="schedule in schedule.children | orderBy compareSchedule"
-        :schedule="schedule"></schedule>
-    </div>
   </div>
-
-  <schedule
-    v-for="schedule in schedule.children | orderBy compareSchedule"
-    v-if="isRoot"
-    :schedule="schedule"></schedule>
 </template>
 
 <style scoped>

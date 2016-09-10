@@ -4,10 +4,15 @@
       :date="schedule.startOn"
       @move="onMoveLeftHandle"></schedule-table-handle>
     <schedule-table-handle
+      class="schedule-table-ribbon"
       :date="schedule.startOn"
       :attach="'left'"
       :style="[ribbonStyle]"
-      @move="onMoveRibbonHandle"></schedule-table-handle>
+      @move="onMoveRibbonHandle">
+      <div class="inner">
+        <span class="title">{{ schedule.title }}</span>
+      </div>
+    </schedule-table-handle>
     <schedule-table-handle
       :date="schedule.endOn"
       :scale-base="'cell'"
@@ -17,10 +22,6 @@
       <div v-for="x in viewDates" class="cell" :style="[cellStyle]"></div>
     </div>
   </div>
-
-  <schedule-table-row
-    v-for="schedule in schedule.children | orderBy compareSchedule"
-    :schedule="schedule"></schedule-table-row>
 </template>
 
 <script>
@@ -61,7 +62,8 @@ export default {
   computed: {
     rowStyle () {
       return {
-        width: this.viewRangeLength * this.viewCell.width + 'px'
+        width: this.viewRangeLength * this.viewCell.width + 'px',
+        height: this.viewCell.height + 'px'
       }
     },
 
@@ -81,15 +83,12 @@ export default {
 
   methods: {
     onMoveLeftHandle (date) {
-      console.log(date, this.schedule.endOn)
       if (moment(date).isBefore(moment(this.schedule.endOn).add(1, 'days'))) {
         this.setSchedule(this.schedule, 'startOn', date)
       }
     },
 
     onMoveRightHandle (date) {
-      console.log(this.schedule.startOn, date)
-
       if (moment(this.schedule.startOn).isBefore(moment(date).add(1, 'days'))) {
         this.setSchedule(this.schedule, 'endOn', date)
       }
@@ -111,41 +110,33 @@ export default {
 .schedule-table-row {
   position: relative;
   line-height: 1;
-  height: 40px;
   border-bottom: 1px solid #ddd;
 }
 
-/*
-.schedule-table-row {
+.schedule-table-ribbon {
   display: flex;
-  position: absolute;
-  align-items:center;
-  height: 40px;
-  padding: 4px 0;
-  z-index: 5;
-}*/
+  padding-top: 4px;
+  padding-bottom: 5px;
+  z-index: 10;
+  background-color: transparent;
+}
 
-.schedule-table-row-box {
+.schedule-table-ribbon > .inner {
   display: flex;
-  top: 0;
-  height: 32px;
-  padding: 0 4px;
-  width: 100%;
-  background-color: #bcddeb;
-  border: 1px solid #87ceeb;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  padding: 4px;
   align-items: center;
+  width: 100%;
+  background-color: rgba(107, 193, 232, 0.7);
+  border-radius: 4px;
+  z-index: 100;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  user-select: none;
   cursor: move;
 }
 
-.schedule-table-row.drop-target {
-  z-index: 4;
-}
-
-.schedule-table-row.drop-target > .schedule-table-row-box {
-  /*border: 1px dashed #000;*/
-  /*background-color: transparent;*/
+.schedule-table-ribbon.dragging > .inner {
+  background-color: rgba(75, 138, 167, 0.7);
 }
 
 .title {

@@ -1,12 +1,15 @@
 <template>
   <div class="gantt-chart">
     <div class="schedule-title-tree">
-      <schedule :schedule="schedules[0]"></schedule>
+      <schedule
+        v-for="schedule in schedules | orderBy compareSchedule"
+        :schedule="schedule"></schedule>
     </div>
-
     <div class="schedule-table-rows">
       <schedule-table-header></schedule-table-header>
-      <schedule-table-row :schedule="schedules[0]"></schedule-table-row>
+      <schedule-table-row
+        v-for="schedule in schedules | orderBy compareSchedule"
+        :schedule="schedule"></schedule-table-row>
     </div>
   </div>
 </template>
@@ -44,9 +47,12 @@
 import Schedule from './Schedule'
 import ScheduleTableRow from './ScheduleTableRow'
 import ScheduleTableHeader from './ScheduleTableHeader'
+import ScheduleComparable from '../mixins/ScheduleComparable'
 import { schedules } from '../vuex/getters'
 
 export default {
+  mixins: [ ScheduleComparable ],
+
   vuex: {
     getters: { schedules }
   },

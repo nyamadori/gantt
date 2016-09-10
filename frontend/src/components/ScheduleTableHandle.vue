@@ -1,8 +1,8 @@
 <template>
   <div
-    class="handle"
+    :class="{ handle: true, dragging: dragging }"
     :style="[handleStyle]"
-    @mousedown="onMouseDown"></div>
+    @mousedown="onMouseDown"><slot></slot></div>
 </template>
 
 <script>
@@ -108,8 +108,9 @@ export default {
 <style>
 .handle {
   position: absolute;
-  background-color: #900;
+  background-color: transparent;
   z-index: 100;
   width: 10px;
+  cursor: col-resize;
 }
 </style>
