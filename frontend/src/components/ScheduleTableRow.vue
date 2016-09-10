@@ -70,7 +70,7 @@ export default {
     cellStyle () {
       return {
         width: this.viewCell.width + 'px',
-        height: this.viewCell.height + 'px'
+        height: this.viewCell.height - 1 + 'px'
       }
     },
 
@@ -108,9 +108,18 @@ export default {
 
 <style scoped>
 .schedule-table-row {
+  display: flex;
   position: relative;
   line-height: 1;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #dddddd;
+}
+
+.schedule-table-cells {
+  display: flex;
+}
+
+.schedule-table-cells > .cell {
+  border-right: 1px solid #f1f1f1;
 }
 
 .schedule-table-ribbon {
@@ -126,17 +135,17 @@ export default {
   padding: 4px;
   align-items: center;
   width: 100%;
-  background-color: rgba(107, 193, 232, 0.7);
+  background-color: rgba(141, 192, 214, 0.7);
   border-radius: 4px;
   z-index: 100;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   white-space: nowrap;
   user-select: none;
   cursor: move;
 }
 
 .schedule-table-ribbon.dragging > .inner {
-  background-color: rgba(75, 138, 167, 0.7);
+  background-color: rgba(69, 133, 162, 0.7);
 }
 
 .title {

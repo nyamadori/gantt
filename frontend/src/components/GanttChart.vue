@@ -1,10 +1,7 @@
 <template>
   <div class="gantt-chart">
-    <div class="schedule-title-tree">
-      <schedule
-        v-for="schedule in schedules | orderBy compareSchedule"
-        :schedule="schedule"></schedule>
-    </div>
+    <schedule-title-list :schedules="schedules"></schedule-title-list>
+
     <div class="schedule-table-rows">
       <schedule-table-header></schedule-table-header>
       <schedule-table-row
@@ -20,20 +17,10 @@
   position: relative;
 }
 
-.schedule-title-tree {
-  position: absolute;
-  width: 240px;
-  height: 100%;
-  z-index: 10;
-  border-right: 1px solid #ddd;
-  background: #fff;
-  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.5);
-}
-
 .schedule-table-rows {
   position: absolute;
-  left: 240px;
-  width: calc(100% - 240px);
+  width: 100%;
+  padding-left: 200px;
   overflow: scroll;
   height: 100%;
 }
@@ -44,7 +31,7 @@
 </style>
 
 <script>
-import Schedule from './Schedule'
+import ScheduleTitleList from './ScheduleTitleList'
 import ScheduleTableRow from './ScheduleTableRow'
 import ScheduleTableHeader from './ScheduleTableHeader'
 import ScheduleComparable from '../mixins/ScheduleComparable'
@@ -57,7 +44,7 @@ export default {
     getters: { schedules }
   },
   components: {
-    Schedule,
+    ScheduleTitleList,
     ScheduleTableRow,
     ScheduleTableHeader
   }
