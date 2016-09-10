@@ -1,15 +1,16 @@
 <template>
   <div
     class="handle"
-    :style="handleStyle"
+    :style="[handleStyle]"
     @mousedown="onMouseDown"></div>
 </template>
 
 <script>
-import moment from 'moment'
-import { viewRange, viewCell } from '../vuex/getters'
+import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
+import { viewRange, viewCell, viewHandle } from '../vuex/getters'
 
 export default {
+  mixins: [ ScheduleMeasurement ],
   props: {
     date: {
       type: String,
@@ -19,11 +20,16 @@ export default {
       type: String,
       default: 'center',
       validator: (value) => { return ['left', 'center'].indexOf(value) !== -1 }
+    },
+    scaleBase: {
+      type: String,
+      default: 'grid',
+      validator: (value) => { return ['grid', 'cell'].indexOf(value) !== -1 }
     }
   },
 
   vuex: {
-    getters: { viewRange, viewCell }
+    getters: { viewRange, viewCell, viewHandle }
   },
 
   data () {
@@ -33,40 +39,42 @@ export default {
       y: 0,
       prevMouseX: null,
       prevMouseY: null,
-      dragging: false,
-      width: 10
+      dragging: false
     }
   },
 
   computed: {
-    currentDate () {
-      return this.toDate(this.x)
-    },
-
     left () {
-      return this.toPixel(this.currentDate) + this.offsetX
+      return this.toPixel(this.date) + this.handleOffsetX + this.scaleOffsetX
     },
 
-    offsetX () {
+    handleOffsetX () {
       switch (this.attach) {
         case 'left':
           return 0
         case 'center':
-          return -this.width / 2
+          return -this.viewHandle.width / 2
+      }
+    },
+
+    scaleOffsetX () {
+      switch (this.scaleBase) {
+        case 'grid':
+          return 0
+        case 'cell':
+          return this.viewCell.width
       }
     },
 
     handleStyle () {
       return {
         left: this.left + 'px',
-        width: this.width + 'px',
         height: this.viewCell.height + 'px'
       }
     }
   },
 
   created () {
-    this._date = this.date
     this.x = this.toPixel(this.date)
     document.addEventListener('mousemove', this.onMouseMove.bind(this))
     document.addEventListener('mouseup', this.onMouseUp.bind(this))
@@ -84,6 +92,7 @@ export default {
 
       const movX = e.x - this.prevMouseX
       this.x += movX
+      this.$dispatch('move', this.toDate(this.x))
 
       this.prevMouseX = e.x
       this.prevMouseY = e.y
@@ -91,18 +100,6 @@ export default {
 
     onMouseUp (e) {
       this.dragging = false
-    },
-
-    toDate (pixel) {
-      return moment(this.viewRange.start).add(this.toDateNum(pixel), 'days').format()
-    },
-
-    toDateNum (pixel) {
-      return Math.round(pixel / this.viewCell.width)
-    },
-
-    toPixel (date) {
-      return moment(date).diff(moment(this.viewRange.start), 'days') * this.viewCell.width
     }
   }
 }
@@ -112,6 +109,7 @@ export default {
 .handle {
   position: absolute;
   background-color: #900;
-  z-index: 100
+  z-index: 100;
+  width: 10px;
 }
 </style>

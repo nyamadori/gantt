@@ -55,3 +55,7 @@ export function viewCell (state) {
 export function viewHeader (state) {
   return state.view.header
 }
+
+export function viewHandle (state) {
+  return state.view.handle
+}

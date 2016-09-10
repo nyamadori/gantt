@@ -68,6 +68,10 @@ const state = {
 
     header: {
       height: 18
+    },
+
+    handle: {
+      width: 10
     }
   }
 }

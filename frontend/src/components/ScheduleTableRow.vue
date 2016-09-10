@@ -1,37 +1,17 @@
 <template>
   <div class="schedule-table-row" v-if="!isRoot" :style="[rowStyle]">
     <schedule-table-handle
-      :date="schedule.startOn"></schedule-table-handle>
+      :date="schedule.startOn"
+      @move="onMoveLeftHandle"></schedule-table-handle>
     <schedule-table-handle
       :date="schedule.startOn"
-      :attach="'left'"></schedule-table-handle>
+      :attach="'left'"
+      :style="[ribbonStyle]"
+      @move="onMoveRibbonHandle"></schedule-table-handle>
     <schedule-table-handle
-      :date="schedule.endOn"></schedule-table-handle>
-    <!-- <div
-      class="schedule-strip" draggable="true"
-      v-if="!isRoot" :style="[stripStyle]"
-      @dragstart="onStripDragStart" @drag="onStripDrag" @dragend="onStripDragEnd">
-      <div
-        class="handle left"
-        @click="onClick"
-        @dragstart="onHandleDragStart"
-        @drag="onHandleDrag"
-        @dragend="onHandleDragEnd"></div>
-      <div class="schedule-strip-box">
-        <div class="title">{{ schedule.title }}</div>
-      </div>
-      <div
-        class="handle right"
-        @dragstart="onHandleDragStart"
-        @drag="onHandleDrag"
-        @dragend="onHandleDragEnd"></div>
-    </div>
-
-    <div class="schedule-strip drop-target" v-if="showDropTarget" :style="[stripStyle, dropTargetStyle]">
-      <div class="schedule-strip-box">
-        <div class="title">{{ schedule.title }}</div>
-      </div>
-    </div> -->
+      :date="schedule.endOn"
+      :scale-base="'cell'"
+      @move="onMoveRightHandle"></schedule-table-handle>
 
     <div class="schedule-table-cells">
       <div v-for="x in viewDates" class="cell" :style="[cellStyle]"></div>
@@ -48,11 +28,12 @@ import moment from 'moment'
 import ScheduleTableHandle from './ScheduleTableHandle'
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import ScheduleItem from '../mixins/ScheduleItem'
+import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
 import { viewRangeLength, viewDates, viewCell } from '../vuex/getters'
 import { setSchedule } from '../vuex/actions'
 
 export default {
-  mixins: [ScheduleItem, ScheduleComparable],
+  mixins: [ScheduleItem, ScheduleComparable, ScheduleMeasurement],
   name: 'schedule-table-row',
 
   components: {
@@ -78,18 +59,6 @@ export default {
   },
 
   computed: {
-    length () {
-      const start = moment(this.schedule.startOn)
-      const end = moment(this.schedule.endOn)
-      return end.diff(start, 'days') + 1
-    },
-
-    scheduleStartFromviewRange () {
-      const start = moment(this.schedule.startOn)
-      const viewRangeStart = moment(this.view.range.start)
-      return start.diff(viewRangeStart, 'days')
-    },
-
     rowStyle () {
       return {
         width: this.viewRangeLength * this.viewCell.width + 'px'
@@ -103,24 +72,36 @@ export default {
       }
     },
 
-    showDropTarget () {
-      return !this.isRoot && this.dragging
+    ribbonStyle () {
+      return {
+        width: this.scheduleWidth(this.schedule) + 'px'
+      }
     }
   },
 
   methods: {
-    onHandleDrag (e) {
-      this.cursorOffsetX = e.pageX - this.dragStartX - 16
-      this.dayOffset = parseInt(this.cursorOffsetX / this.viewCell.width)
+    onMoveLeftHandle (date) {
+      console.log(date, this.schedule.endOn)
+      if (moment(date).isBefore(moment(this.schedule.endOn).add(1, 'days'))) {
+        this.setSchedule(this.schedule, 'startOn', date)
+      }
     },
 
-    onHandleDragEnd (e) {
-      this.dragging = false
+    onMoveRightHandle (date) {
+      console.log(this.schedule.startOn, date)
+
+      if (moment(this.schedule.startOn).isBefore(moment(date).add(1, 'days'))) {
+        this.setSchedule(this.schedule, 'endOn', date)
+      }
     },
 
-    move (dayOffset) {
-      this.setSchedule(this.schedule, 'startOn', moment(this.schedule.startOn).add(dayOffset, 'days'))
-      this.setSchedule(this.schedule, 'endOn', moment(this.schedule.endOn).add(dayOffset, 'days'))
+    onMoveRibbonHandle (date) {
+      const diff = moment(date).diff(moment(this.schedule.startOn), 'days')
+      this.setSchedule(
+        this.schedule, 'startOn',
+        moment(this.schedule.startOn).add(diff, 'days').format())
+      this.setSchedule(this.schedule, 'endOn',
+        moment(this.schedule.endOn).add(diff, 'days').format())
     }
   }
 }

@@ -21,9 +21,11 @@
 
 <script>
 import moment from 'moment'
+import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
 import { viewCell, viewDates, viewRangeLength, viewMonths, viewHeader } from '../vuex/getters'
 
 export default {
+  mixins: [ ScheduleMeasurement ],
   vuex: {
     getters: {
       viewCell, viewDates, viewRangeLength, viewMonths, viewHeader
