@@ -52,7 +52,7 @@ const state = {
 
     cell: {
       width: 24,
-      height: 40
+      height: 44
     },
 
     handle: {

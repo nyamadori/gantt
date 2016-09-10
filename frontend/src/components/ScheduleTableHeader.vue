@@ -3,7 +3,7 @@
     <div
       :style="[headerCellStyle, monthHeaderCellStyle(month)]"
       v-for="month in viewMonths" class="cell">
-      {{ month.start | format 'YYYY/MM' }}
+      {{ month.start | dateFormat 'YYYY/MM' }}
     </div>
   </div>
 
@@ -11,7 +11,7 @@
     <div
       v-for="date in viewDates"
       class="cell"
-      :style="[headerCellStyle]">{{ date | format 'D' }}</div>
+      :style="[headerCellStyle]">{{ date | dateFormat 'D' }}</div>
   </div>
 </template>
 
@@ -32,7 +32,7 @@
 }
 
 .schedule-table-header.month {
-  height: 24px;
+  height: 28px;
   font-size: 0.9rem;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .schedule-table-header.date {
-  height: 18px;
+  height: 16px;
   font-size: 0.8rem;
 }
 </style>
@@ -49,6 +49,7 @@
 <script>
 import moment from 'moment'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
+import { dateFormat } from '../filters'
 import { viewCell, viewDates, viewRangeLength, viewMonths, viewHeader } from '../vuex/getters'
 
 export default {
@@ -58,12 +59,7 @@ export default {
       viewCell, viewDates, viewRangeLength, viewMonths, viewHeader
     }
   },
-
-  filters: {
-    format (value, format) {
-      return moment(value).format(format)
-    }
-  },
+  filters: { dateFormat },
 
   computed: {
     headerRowStyle () {

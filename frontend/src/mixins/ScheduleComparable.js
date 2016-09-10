@@ -4,28 +4,29 @@ function getLength (s) {
   return end - start
 }
 
+function compareStartOn (a, b) {
+  const aStart = new Date(a.startOn)
+  const bStart = new Date(b.startOn)
+  return aStart - bStart
+}
+
+function compareId (a, b) {
+  return a.id - b.id
+}
+
+function compareLength (a, b) {
+  return getLength(a) - getLength(b)
+}
+
 export default {
   methods: {
-    compareStartOn (a, b) {
-      const aStart = new Date(a.startOn)
-      const bStart = new Date(b.startOn)
-      return aStart - bStart
-    },
-
-    compareId (a, b) {
-      return a.id - b.id
-    },
-
-    compareLength (a, b) {
-      return getLength(a) - getLength(b)
-    },
-
     compareSchedule (a, b) {
       const comps = [
-        this.compareStartOn(a, b),
-        this.compareLength(a, b) * -1,
-        this.compareId(a, b)
+        compareStartOn(a, b),
+        compareLength(a, b) * -1,
+        compareId(a, b)
       ]
+
       return comps.find((c) => c !== 0)
     }
   }

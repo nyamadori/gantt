@@ -28,13 +28,12 @@
 import moment from 'moment'
 import ScheduleTableHandle from './ScheduleTableHandle'
 import ScheduleComparable from '../mixins/ScheduleComparable'
-import ScheduleItem from '../mixins/ScheduleItem'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
 import { viewRangeLength, viewDates, viewCell } from '../vuex/getters'
 import { setSchedule } from '../vuex/actions'
 
 export default {
-  mixins: [ScheduleItem, ScheduleComparable, ScheduleMeasurement],
+  mixins: [ScheduleComparable, ScheduleMeasurement],
   name: 'schedule-table-row',
 
   components: {
@@ -124,9 +123,8 @@ export default {
 
 .schedule-table-ribbon {
   display: flex;
-  padding-top: 4px;
-  padding-bottom: 5px;
-  z-index: 10;
+  padding-top: 5px;
+  padding-bottom: 6px;
   background-color: transparent;
 }
 
@@ -137,7 +135,7 @@ export default {
   width: 100%;
   background-color: rgba(141, 192, 214, 0.7);
   border-radius: 4px;
-  z-index: 100;
+  z-index: 10;
   font-size: 0.85rem;
   white-space: nowrap;
   user-select: none;

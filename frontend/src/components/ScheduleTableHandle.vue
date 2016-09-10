@@ -109,7 +109,7 @@ export default {
 .handle {
   position: absolute;
   background-color: transparent;
-  z-index: 100;
+  z-index: 50;
   width: 10px;
   cursor: col-resize;
 }

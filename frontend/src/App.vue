@@ -29,6 +29,9 @@ html, body, #app {
 }
 
 html {
+  overflow: hidden;
   font-size: 14px;
+  user-select: none;
+  cursor: default;
 }
 </style>
