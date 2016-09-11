@@ -60,14 +60,12 @@
 <script>
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import { dateFormat } from '../filters'
-import { viewCell } from '../vuex/getters'
+import { tableCell } from '../vuex/getters'
 
 export default {
   mixins: [ScheduleComparable],
-  name: 'schedule',
-
   vuex: {
-    getters: { viewCell }
+    getters: { tableCell }
   },
 
   props: {
@@ -78,7 +76,7 @@ export default {
   computed: {
     scheduleStyle () {
       return {
-        height: this.viewCell.height + 'px'
+        height: this.tableCell.height + 'px'
       }
     }
   }

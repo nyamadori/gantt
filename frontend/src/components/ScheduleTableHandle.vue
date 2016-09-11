@@ -7,7 +7,7 @@
 
 <script>
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
-import { viewRange, viewCell, viewHandle } from '../vuex/getters'
+import { table, tableCell, handle } from '../vuex/getters'
 
 export default {
   mixins: [ ScheduleMeasurement ],
@@ -29,7 +29,7 @@ export default {
   },
 
   vuex: {
-    getters: { viewRange, viewCell, viewHandle }
+    getters: { table, tableCell, handle }
   },
 
   data () {
@@ -53,7 +53,7 @@ export default {
         case 'left':
           return 0
         case 'center':
-          return -this.viewHandle.width / 2
+          return -this.handle.width / 2
       }
     },
 
@@ -62,14 +62,14 @@ export default {
         case 'grid':
           return 0
         case 'cell':
-          return this.viewCell.width
+          return this.tableCell.width
       }
     },
 
     handleStyle () {
       return {
         left: this.left + 'px',
-        height: this.viewCell.height + 'px'
+        height: this.tableCell.height + 'px'
       }
     }
   },

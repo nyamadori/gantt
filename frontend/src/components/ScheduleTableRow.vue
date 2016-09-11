@@ -1,25 +1,27 @@
 <template>
-  <div class="schedule-table-row" v-if="!isRoot" :style="[rowStyle]">
-    <schedule-table-handle
-      :date="schedule.startOn"
-      @move="onMoveLeftHandle"></schedule-table-handle>
-    <schedule-table-handle
-      class="schedule-table-ribbon"
-      :date="schedule.startOn"
-      :attach="'left'"
-      :style="[ribbonStyle]"
-      @move="onMoveRibbonHandle">
-      <div class="inner">
-        <span class="title">{{ schedule.title }}</span>
-      </div>
-    </schedule-table-handle>
-    <schedule-table-handle
-      :date="schedule.endOn"
-      :scale-base="'cell'"
-      @move="onMoveRightHandle"></schedule-table-handle>
+  <div
+    class="schedule-table-row"
+    :style="[rowStyle]">
+      <schedule-table-handle
+        :date="schedule.startOn"
+        @move="onMoveLeftHandle"></schedule-table-handle>
+      <schedule-table-handle
+        class="schedule-table-ribbon"
+        :date="schedule.startOn"
+        :attach="'left'"
+        :style="[ribbonStyle]"
+        @move="onMoveRibbonHandle">
+        <div class="inner">
+          <span class="title">{{ schedule.title }}</span>
+        </div>
+      </schedule-table-handle>
+      <schedule-table-handle
+        :date="schedule.endOn"
+        :scale-base="'cell'"
+        @move="onMoveRightHandle"></schedule-table-handle>
 
     <div class="schedule-table-cells">
-      <div v-for="x in viewDates" class="cell" :style="[cellStyle]"></div>
+      <div v-for="x in tableDates" class="cell" :style="[cellStyle]"></div>
     </div>
   </div>
 </template>
@@ -29,7 +31,7 @@ import moment from 'moment'
 import ScheduleTableHandle from './ScheduleTableHandle'
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
-import { viewRangeLength, viewDates, viewCell } from '../vuex/getters'
+import { tableLength, tableDates, tableCell, table } from '../vuex/getters'
 import { setSchedule } from '../vuex/actions'
 
 export default {
@@ -41,7 +43,7 @@ export default {
   },
 
   vuex: {
-    getters: { viewRangeLength, viewDates, viewCell },
+    getters: { tableLength, tableDates, tableCell, table },
     actions: { setSchedule }
   },
 
@@ -51,25 +53,22 @@ export default {
 
   data () {
     return {
-      dragging: false,
-      dragStartX: 0,
-      cursorOffsetX: 0,
-      dayOffset: 0
+      mouseOvering: false
     }
   },
 
   computed: {
     rowStyle () {
       return {
-        width: this.viewRangeLength * this.viewCell.width + 'px',
-        height: this.viewCell.height + 'px'
+        width: this.tableLength * this.tableCell.width + 'px',
+        height: this.tableCell.height + 'px'
       }
     },
 
     cellStyle () {
       return {
-        width: this.viewCell.width + 'px',
-        height: this.viewCell.height - 1 + 'px'
+        width: this.tableCell.width + 'px',
+        height: this.tableCell.height - 1 + 'px'
       }
     },
 
@@ -77,6 +76,14 @@ export default {
       return {
         width: this.scheduleWidth(this.schedule) + 'px'
       }
+    },
+
+    isNew () {
+      return this.schedule.id === null
+    },
+
+    newScheduleHandleVisible () {
+      return this.isNew && this.mouseOvering
     }
   },
 

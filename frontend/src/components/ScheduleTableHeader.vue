@@ -2,14 +2,14 @@
   <div class="schedule-table-header month" :style="[headerRowStyle]">
     <div
       :style="[headerCellStyle, monthHeaderCellStyle(month)]"
-      v-for="month in viewMonths" class="cell">
+      v-for="month in tableMonths" class="cell">
       {{ month.start | dateFormat 'YYYY/MM' }}
     </div>
   </div>
 
   <div class="schedule-table-header date" :style="[headerRowStyle]">
     <div
-      v-for="date in viewDates"
+      v-for="date in tableDates"
       class="cell"
       :style="[headerCellStyle]">{{ date | dateFormat 'D' }}</div>
   </div>
@@ -50,13 +50,13 @@
 import moment from 'moment'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
 import { dateFormat } from '../filters'
-import { viewCell, viewDates, viewRangeLength, viewMonths, viewHeader } from '../vuex/getters'
+import { tableCell, tableDates, tableLength, tableMonths } from '../vuex/getters'
 
 export default {
   mixins: [ ScheduleMeasurement ],
   vuex: {
     getters: {
-      viewCell, viewDates, viewRangeLength, viewMonths, viewHeader
+      tableCell, tableDates, tableLength, tableMonths
     }
   },
   filters: { dateFormat },
@@ -64,13 +64,13 @@ export default {
   computed: {
     headerRowStyle () {
       return {
-        width: this.viewRangeLength * this.viewCell.width + 'px'
+        width: this.tableLength * this.tableCell.width + 'px'
       }
     },
 
     headerCellStyle () {
       return {
-        width: this.viewCell.width + 'px'
+        width: this.tableCell.width + 'px'
       }
     }
   },
@@ -78,7 +78,7 @@ export default {
   methods: {
     monthHeaderCellStyle (month) {
       const days = moment(month.end).diff(moment(month.start), 'days')
-      return { width: days * this.viewCell.width + 'px' }
+      return { width: days * this.tableCell.width + 'px' }
     }
   }
 }

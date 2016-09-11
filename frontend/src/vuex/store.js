@@ -41,23 +41,29 @@ const state = {
       startOn: '2016-08-26',
       endOn: '2016-09-10',
       tasks: []
+    },
+    {
+      id: null,
+      title: 'new',
+      startOn: null,
+      endOn: null,
+      tasks: []
     }
   ],
 
-  view: {
-    range: {
-      start: moment('2016-08-01').format(),
-      end: moment('2016-10-01').format()
-    },
+  table: {
+    scrollLeft: 0,
+    start: moment('2016-08-01').format(),
+    end: moment('2016-10-01').format()
+  },
 
-    cell: {
-      width: 24,
-      height: 44
-    },
+  tableCell: {
+    width: 24,
+    height: 44
+  },
 
-    handle: {
-      width: 10
-    }
+  handle: {
+    width: 10
   }
 }
 

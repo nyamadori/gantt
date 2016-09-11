@@ -4,19 +4,19 @@ export function schedules (state) {
   return state.schedules
 }
 
-export function viewRange (state) {
-  return state.view.range
+export function table (state) {
+  return state.table
 }
 
-export function viewRangeLength (state) {
-  const start = moment(state.view.range.start)
-  const end = moment(state.view.range.end)
+export function tableLength (state) {
+  const start = moment(state.table.start)
+  const end = moment(state.table.end)
   return end.diff(start, 'days')
 }
 
-export function viewDates (state) {
-  const len = viewRangeLength(state)
-  const start = state.view.range.start
+export function tableDates (state) {
+  const len = tableLength(state)
+  const start = state.table.start
   const result = []
 
   for (var i = 0; i < len; i++) {
@@ -26,10 +26,10 @@ export function viewDates (state) {
   return result
 }
 
-export function viewMonths (state) {
+export function tableMonths (state) {
   var result = []
-  var rangeStart = moment(state.view.range.start)
-  var rangeEnd = moment(state.view.range.end)
+  var rangeStart = moment(state.table.start)
+  var rangeEnd = moment(state.table.end)
 
   var end = rangeStart.clone().month(rangeStart.month() + 1).date(1)
   result.push({ start: rangeStart.clone().format(), end: end.format() })
@@ -48,10 +48,10 @@ export function viewMonths (state) {
   return result
 }
 
-export function viewCell (state) {
-  return state.view.cell
+export function tableCell (state) {
+  return state.tableCell
 }
 
-export function viewHandle (state) {
-  return state.view.handle
+export function handle (state) {
+  return state.handle
 }
