@@ -18,8 +18,8 @@
 
 <style scoped>
 .schedule-title-list {
-  position: absolute;
-  width: 200px;
+  flex-shrink: 0;
+  flex-basis: 200px;
   height: 100%;
   z-index: 100;
   background-color: rgba(0, 0, 0, 0.8);

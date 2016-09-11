@@ -8,20 +8,27 @@
         v-for="schedule in schedules | orderBy compareSchedule"
         :schedule="schedule"></schedule-table-row>
     </div>
+
+    <schedule-panel></schedule-panel>
   </div>
 </template>
 
 <style scoped>
 .gantt-chart {
+  display: flex;
   height: 100%;
-  position: relative;
 }
 
 .schedule-table {
-  position: absolute;
-  width: 100%;
-  padding-left: 200px;
   overflow: scroll;
+  height: 100%;
+  flex-grow: 1;
+  flex-basis: auto;
+}
+
+.schedule-panel {
+  flex-shrink: 0;
+  flex-basis: 240px;
   height: 100%;
 }
 
@@ -34,6 +41,7 @@
 import ScheduleTitleList from './ScheduleTitleList'
 import ScheduleTableRow from './ScheduleTableRow'
 import ScheduleTableHeader from './ScheduleTableHeader'
+import SchedulePanel from './SchedulePanel'
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import { schedules, table } from '../vuex/getters'
 import { setTable } from '../vuex/actions'
@@ -48,7 +56,8 @@ export default {
   components: {
     ScheduleTitleList,
     ScheduleTableRow,
-    ScheduleTableHeader
+    ScheduleTableHeader,
+    SchedulePanel
   },
 
   methods: {
