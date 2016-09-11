@@ -1,7 +1,8 @@
 <template>
   <div
     class="schedule-table-row"
-    :style="[rowStyle]">
+    :style="[rowStyle]"
+    @click="onClick">
       <schedule-table-handle
         :date="schedule.startOn"
         @move="onMoveLeftHandle"></schedule-table-handle>
@@ -32,7 +33,7 @@ import ScheduleTableHandle from './ScheduleTableHandle'
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
 import { tableLength, tableDates, tableCell, table } from '../vuex/getters'
-import { setSchedule } from '../vuex/actions'
+import { setSchedule, setSelectionSchedule } from '../vuex/actions'
 
 export default {
   mixins: [ScheduleComparable, ScheduleMeasurement],
@@ -44,7 +45,7 @@ export default {
 
   vuex: {
     getters: { tableLength, tableDates, tableCell, table },
-    actions: { setSchedule }
+    actions: { setSchedule, setSelectionSchedule }
   },
 
   props: {
@@ -88,6 +89,10 @@ export default {
   },
 
   methods: {
+    onClick (e) {
+      this.setSelectionSchedule(this.schedule)
+    },
+
     onMoveLeftHandle (date) {
       if (moment(date).isBefore(moment(this.schedule.endOn).add(1, 'days'))) {
         this.setSchedule(this.schedule, 'startOn', date)

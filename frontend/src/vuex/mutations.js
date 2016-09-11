@@ -9,5 +9,9 @@ export default {
 
   SET_TABLE (state, table, key, value) {
     table[key] = value
+  },
+
+  SET_SELECTION_SCHEDULE (state, schedule) {
+    state.selectionSchedule = schedule
   }
 }

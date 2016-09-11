@@ -4,6 +4,10 @@ export function schedules (state) {
   return state.schedules
 }
 
+export function selectionSchedule (state) {
+  return state.selectionSchedule
+}
+
 export function table (state) {
   return state.table
 }

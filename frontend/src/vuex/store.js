@@ -62,6 +62,8 @@ const state = {
     height: 44
   },
 
+  selectionSchedule: null,
+
   handle: {
     width: 10
   }
@@ -69,6 +71,5 @@ const state = {
 
 export default new Vuex.Store({
   state,
-  mutations,
-  strict: true
+  mutations
 })

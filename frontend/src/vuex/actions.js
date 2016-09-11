@@ -9,3 +9,7 @@ export const setSchedule = ({ dispatch }, schedule, key, value) => {
 export const setTable = ({ dispatch }, table, key, value) => {
   dispatch('SET_TABLE', table, key, value)
 }
+
+export const setSelectionSchedule = ({ dispatch }, schedule) => {
+  dispatch('SET_SELECTION_SCHEDULE', schedule)
+}

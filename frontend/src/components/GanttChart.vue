@@ -2,7 +2,7 @@
   <div class="gantt-chart">
     <schedule-title-list :schedules="schedules"></schedule-title-list>
     <schedule-table></schedule-table>
-    <schedule-panel></schedule-panel>
+    <schedule-panel :schedule="selectionSchedule"></schedule-panel>
   </div>
 </template>
 
@@ -18,23 +18,13 @@
   flex-grow: 1;
   flex-basis: auto;
 }
-
-.schedule-panel {
-  flex-shrink: 0;
-  flex-basis: 240px;
-  height: 100%;
-}
-
-.header {
-  text-align: center;
-}
 </style>
 
 <script>
 import ScheduleTable from './ScheduleTable'
 import ScheduleTitleList from './ScheduleTitleList'
 import SchedulePanel from './SchedulePanel'
-import { schedules } from '../vuex/getters'
+import { schedules, selectionSchedule } from '../vuex/getters'
 
 export default {
   components: {
@@ -44,7 +34,7 @@ export default {
   },
 
   vuex: {
-    getters: { schedules }
+    getters: { schedules, selectionSchedule }
   },
 
   methods: {
