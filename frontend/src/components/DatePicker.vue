@@ -1,0 +1,188 @@
+<template>
+  <span class="date-picker" v-el:container>
+    <input
+      class="year-input"
+      :style="numericalInputStyle(font, 4)"
+      v-el:year-input
+      v-model="year" number
+      @click="inputClicked"
+      @keydown.up.prevent="yearUp"
+      @keydown.down.prevent="yearDown"
+      @keydown.left.prevent="focusPrev"
+      @keydown.right.prevent="focusNext"></input>
+    /
+    <input
+      class="month-input"
+      :style="numericalInputStyle(font, 2)"
+      v-el:month-input
+      v-model="month" number
+      @click="inputClicked"
+      @keydown.up.prevent="monthUp"
+      @keydown.down.prevent="monthDown"
+      @keydown.left.prevent="focusPrev"
+      @keydown.right.prevent="focusNext"></input>
+    /
+    <input
+      class="day-input"
+      :style="numericalInputStyle(font, 2)"
+      v-el:day-input
+      v-model="day" number
+      @click="inputClicked"
+      @keydown.up.prevent="dayUp"
+      @keydown.down.prevent="dayDown"
+      @keydown.left.prevent="focusPrev"
+      @keydown.right.prevent="focusNext"></input>
+  </span>
+</template>
+
+<script>
+import moment from 'moment'
+
+export default {
+  props: {
+    date: {
+      type: String,
+      default: '2016-02-02'
+    }
+  },
+
+  data () {
+    return {
+      font: '',
+      focusCounter: 0,
+      currentDate: null
+    }
+  },
+
+  computed: {
+    currentDate: {
+      get (v) {
+        return this.date
+      },
+
+      set (v) {
+        if (!moment(v).isValid()) return
+        this.date = v
+        this.$dispatch('changed', v)
+      }
+    },
+
+    year: {
+      get () {
+        return moment(this.date).format('YYYY')
+      },
+
+      set (v) {
+        this.currentDate = moment(this.date).year(v).format()
+      }
+    },
+
+    month: {
+      get () {
+        return moment(this.date).format('MM')
+      },
+
+      set (v) {
+        this.currentDate = moment(this.date).month(v - 1).format()
+      }
+    },
+
+    day: {
+      get () {
+        return moment(this.date).format('DD')
+      },
+
+      set (v) {
+        this.currentDate = moment(this.date).date(v).format()
+      }
+    },
+
+    focusIndex: {
+      get () {
+        return this.focusCounter
+      },
+
+      set (v) {
+        if (v >= this.$inputs.length) {
+          this.focusCounter = 0
+        } else if (v < 0) {
+          this.focusCounter = this.$inputs.length - 1
+        } else {
+          this.focusCounter = v
+        }
+
+        const input = this.$inputs[this.focusCounter]
+        input.focus()
+      }
+    }
+  },
+
+  ready () {
+    this.font = window.getComputedStyle(this.$els.container, null).getPropertyValue('font')
+    this.$inputs = ['year', 'month', 'day'].map((name) => this.$els[name + 'Input'])
+    this.focusIndex = 0
+  },
+
+  methods: {
+    measureTextSize (text, font) {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      ctx.font = font
+      return ctx.measureText(text)
+    },
+
+    numericalInputStyle (font, length) {
+      const measure = this.measureTextSize('8'.repeat(length), font)
+
+      return {
+        width: measure.width + 'px',
+        height: measure.height + 'px'
+      }
+    },
+
+    yearUp (e) { this.year++ },
+    yearDown (e) { this.year-- },
+    monthUp (e) { this.month++ },
+    monthDown (e) { this.month-- },
+    dayUp (e) { this.day++ },
+    dayDown (e) { this.day-- },
+
+    focusPrev (e) {
+      this.focusIndex = this.focusIndex - 1
+    },
+
+    focusNext (e) {
+      this.focusIndex = this.focusIndex + 1
+    },
+
+    inputClicked (e) {
+      this.focusIndex = this.$inputs.indexOf(e.target)
+    }
+  }
+}
+</script>
+
+<style scoped>
+.date-picker {
+  display: inline-flex;
+}
+
+input {
+  box-sizing: content-box;
+  padding: 0 2px;
+  border-radius: 2px;
+  border-style: none;
+  border-bottom: 1px solid transparent;
+  font-family: inherit;
+  background: transparent;
+  text-align: right;
+  font-size: inherit;
+  outline: 0;
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+
+input:focus {
+  background-color: rgb(163, 201, 237)
+}
+</style>
