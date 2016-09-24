@@ -42,7 +42,7 @@ export default {
   props: {
     date: {
       type: String,
-      default: '2016-02-02'
+      default: moment().format()
     }
   },
 
@@ -117,7 +117,7 @@ export default {
     }
   },
 
-  ready () {
+  compiled () {
     this.font = window.getComputedStyle(this.$els.container, null).getPropertyValue('font')
     this.$inputs = ['year', 'month', 'day'].map((name) => this.$els[name + 'Input'])
     this.focusIndex = 0
@@ -125,6 +125,7 @@ export default {
 
   methods: {
     measureTextSize (text, font) {
+      // FIXME: extract this method from here
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       ctx.font = font
