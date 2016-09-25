@@ -2,7 +2,7 @@
   <span class="date-picker" v-el:container>
     <input
       class="year-input"
-      :style="numericalInputStyle(font, 4)"
+      :style="numericalInputStyle(font, '9999')"
       v-el:year-input
       v-model="year" number
       @click="inputClicked"
@@ -13,7 +13,7 @@
     /
     <input
       class="month-input"
-      :style="numericalInputStyle(font, 2)"
+      :style="numericalInputStyle(font, '99')"
       v-el:month-input
       v-model="month" number
       @click="inputClicked"
@@ -24,7 +24,7 @@
     /
     <input
       class="day-input"
-      :style="numericalInputStyle(font, 2)"
+      :style="numericalInputStyle(font, '99')"
       v-el:day-input
       v-model="day" number
       @click="inputClicked"
@@ -132,8 +132,8 @@ export default {
       return ctx.measureText(text)
     },
 
-    numericalInputStyle (font, length) {
-      const measure = this.measureTextSize('8'.repeat(length), font)
+    numericalInputStyle (font, str) {
+      const measure = this.measureTextSize(str, font)
 
       return {
         width: measure.width + 'px',
@@ -141,18 +141,18 @@ export default {
       }
     },
 
-    yearUp (e) { this.year++ },
-    yearDown (e) { this.year-- },
-    monthUp (e) { this.month++ },
-    monthDown (e) { this.month-- },
-    dayUp (e) { this.day++ },
-    dayDown (e) { this.day-- },
+    yearUp () { this.year++ },
+    yearDown () { this.year-- },
+    monthUp () { this.month++ },
+    monthDown () { this.month-- },
+    dayUp () { this.day++ },
+    dayDown () { this.day-- },
 
-    focusPrev (e) {
+    focusPrev () {
       this.focusIndex = this.focusIndex - 1
     },
 
-    focusNext (e) {
+    focusNext () {
       this.focusIndex = this.focusIndex + 1
     },
 
