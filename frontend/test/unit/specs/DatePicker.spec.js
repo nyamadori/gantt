@@ -50,7 +50,7 @@ describe('DatePicker.vue', () => {
           beforeEach(function () {
             this.spy = sinon.spy()
             this.datePicker.$on('changed', this.spy)
-            this.newDate = '2017/09/20'
+            this.newDate = '2017-09-20'
             this.datePicker.currentDate = this.newDate
           })
 
@@ -65,7 +65,7 @@ describe('DatePicker.vue', () => {
 
         context('with invalid date', function () {
           beforeEach(function () {
-            this.newDate = 'xxxx/xx/xx'
+            this.newDate = 'invalid date'
             this.datePicker.currentDate = this.newDate
           })
 
@@ -149,6 +149,20 @@ describe('DatePicker.vue', () => {
         it('sets #focusIndex to 1', function () {
           this.datePicker.$els.monthInput.click()
           expect(this.datePicker.focusIndex).to.eq(1)
+        })
+      })
+
+      describe('#focusPrev', function () {
+        it('decrements #focusIndex', function () {
+          expect(() => { this.datePicker.focusPrev() })
+            .to.alter(() => this.datePicker.focusIndex, { from: 0, to: 2 })
+        })
+      })
+
+      describe('#focusNext', function () {
+        it('increments #focusIndex', function () {
+          expect(() => { this.datePicker.focusNext() })
+            .to.alter(() => this.datePicker.focusIndex, { from: 0, to: 1 })
         })
       })
     })
