@@ -11,3 +11,5 @@ testsContext.keys().forEach(testsContext)
 // you want coverage for.
 var srcContext = require.context('../../src', true, /^\.\/(?!main(\.js)?$)/)
 srcContext.keys().forEach(srcContext)
+
+window.chai.use(require('chai-change'))
