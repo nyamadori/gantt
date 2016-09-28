@@ -117,7 +117,7 @@ export default {
     }
   },
 
-  compiled () {
+  ready () {
     this.font = window.getComputedStyle(this.$els.container, null).getPropertyValue('font')
     this.$inputs = ['year', 'month', 'day'].map((name) => this.$els[name + 'Input'])
     this.focusIndex = 0
