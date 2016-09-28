@@ -41,13 +41,6 @@ const state = {
       startOn: '2016-08-26',
       endOn: '2016-09-10',
       tasks: []
-    },
-    {
-      id: null,
-      title: 'new',
-      startOn: null,
-      endOn: null,
-      tasks: []
     }
   ],
 
