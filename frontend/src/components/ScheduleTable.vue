@@ -1,5 +1,5 @@
 <template>
-  <div class="schedule-table" @scroll="onScroll">
+  <div class="schedule-table">
     <schedule-table-header></schedule-table-header>
     <schedule-table-row
       v-for="schedule in schedules | orderBy compareSchedule"
