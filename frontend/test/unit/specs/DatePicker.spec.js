@@ -26,6 +26,7 @@ describe('DatePicker.vue', () => {
         template: `<div><date-picker date="${this.date}" v-ref:date-picker></date-picker></div>`,
         components: { DatePicker }
       }).$mount()
+      this.vm.$appendTo('body')
       this.datePicker = this.vm.$refs.datePicker
     })
 
