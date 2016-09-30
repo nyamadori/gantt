@@ -1,5 +1,5 @@
 <template>
-  <span class="date-picker" v-el:container>
+  <span class="date-picker" v-el:container @click="onClick">
     <input
       class="year-input"
       :style="numericalInputStyle(font, '9999')"
@@ -33,6 +33,7 @@
       @keydown.left.prevent="focusPrev"
       @keydown.right.prevent="focusNext"></input>
   </span>
+  <calendar :date="date" v-if="isEditing" :style="{ position: 'absolute' }"></calendar>
 </template>
 
 <script>
@@ -50,7 +51,8 @@ export default {
     return {
       font: '',
       focusCounter: 0,
-      currentDate: null
+      currentDate: null,
+      isEditing: false
     }
   },
 
@@ -158,6 +160,10 @@ export default {
 
     inputClicked (e) {
       this.focusIndex = this.$inputs.indexOf(e.target)
+    },
+
+    onClick (e) {
+      this.isEditing = true
     }
   }
 }

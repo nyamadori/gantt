@@ -102,6 +102,14 @@ export default {
 </script>
 
 <style scoped>
+.calendar {
+  display: inline-block;
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
 table {
   border-collapse: collapse;
   font-size: 11px;
