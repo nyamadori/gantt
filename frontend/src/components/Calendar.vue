@@ -12,7 +12,7 @@
       <tbody>
         <tr v-for="week in weekRows">
           <td class="day-cell" v-for="day in week">
-            <a href="#" @click="selectDay(day)" :class="dayClasses(day)">
+            <a href="#" @click.prevent.stop="selectDay(day)" :class="dayClasses(day)">
               {{ day.date | dateFormat 'D' }}
             </a>
           </td>
