@@ -166,6 +166,7 @@ export default {
 <style scoped>
 .date-picker {
   display: inline-flex;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 input {
