@@ -34,7 +34,11 @@
         @keydown.left.prevent="focusPrev"
         @keydown.right.prevent="focusNext"></input>
     </span>
-    <calendar :date="date" v-if="isEditing" :style="calendarStyle()"></calendar>
+    <calendar
+      v-if="isEditing"
+      :date="date"
+      :style="calendarStyle()"
+      @changed="onCalendarChanged"></calendar>
   </span>
 </template>
 
@@ -187,6 +191,10 @@ export default {
       if (this.$els.container.contains(e.target)) return
 
       this.isEditing = false
+    },
+
+    onCalendarChanged (date) {
+      this.currentDate = date
     }
   }
 }

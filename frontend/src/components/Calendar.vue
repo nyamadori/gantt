@@ -36,6 +36,12 @@ export default {
     }
   },
 
+  watch: {
+    date (val) {
+      this.$dispatch('changed', val)
+    }
+  },
+
   computed: {
     weekdays () {
       return moment.weekdaysMin()
