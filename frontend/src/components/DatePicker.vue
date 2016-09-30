@@ -1,39 +1,41 @@
 <template>
   <span class="date-picker" v-el:container @click="onClick">
-    <input
-      class="year-input"
-      :style="numericalInputStyle(font, '9999')"
-      v-el:year-input
-      v-model="year" number
-      @click="inputClicked"
-      @keydown.up.prevent="yearUp"
-      @keydown.down.prevent="yearDown"
-      @keydown.left.prevent="focusPrev"
-      @keydown.right.prevent="focusNext"></input>
-    /
-    <input
-      class="month-input"
-      :style="numericalInputStyle(font, '99')"
-      v-el:month-input
-      v-model="month" number
-      @click="inputClicked"
-      @keydown.up.prevent="monthUp"
-      @keydown.down.prevent="monthDown"
-      @keydown.left.prevent="focusPrev"
-      @keydown.right.prevent="focusNext"></input>
-    /
-    <input
-      class="day-input"
-      :style="numericalInputStyle(font, '99')"
-      v-el:day-input
-      v-model="day" number
-      @click="inputClicked"
-      @keydown.up.prevent="dayUp"
-      @keydown.down.prevent="dayDown"
-      @keydown.left.prevent="focusPrev"
-      @keydown.right.prevent="focusNext"></input>
+    <span class="inputs-container" v-el:inputs-container>
+      <input
+        class="year-input"
+        :style="numericalInputStyle(font, '9999')"
+        v-el:year-input
+        v-model="year" number
+        @click="inputClicked"
+        @keydown.up.prevent="yearUp"
+        @keydown.down.prevent="yearDown"
+        @keydown.left.prevent="focusPrev"
+        @keydown.right.prevent="focusNext"></input>
+      /
+      <input
+        class="month-input"
+        :style="numericalInputStyle(font, '99')"
+        v-el:month-input
+        v-model="month" number
+        @click="inputClicked"
+        @keydown.up.prevent="monthUp"
+        @keydown.down.prevent="monthDown"
+        @keydown.left.prevent="focusPrev"
+        @keydown.right.prevent="focusNext"></input>
+      /
+      <input
+        class="day-input"
+        :style="numericalInputStyle(font, '99')"
+        v-el:day-input
+        v-model="day" number
+        @click="inputClicked"
+        @keydown.up.prevent="dayUp"
+        @keydown.down.prevent="dayDown"
+        @keydown.left.prevent="focusPrev"
+        @keydown.right.prevent="focusNext"></input>
+    </span>
+    <calendar :date="date" v-if="isEditing" :style="calendarStyle()"></calendar>
   </span>
-  <calendar :date="date" v-if="isEditing" :style="{ position: 'absolute' }"></calendar>
 </template>
 
 <script>
@@ -164,14 +166,22 @@ export default {
 
     onClick (e) {
       this.isEditing = true
+    },
+
+    calendarStyle () {
+      return {
+        position: 'absolute',
+        top: window.getComputedStyle(this.$els.inputsContainer, null).height
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-.date-picker {
+.date-picker, .inputs-container {
   display: inline-flex;
+  position: relative;
   font-family: Helvetica, Arial, sans-serif;
 }
 
