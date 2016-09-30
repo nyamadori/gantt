@@ -62,8 +62,9 @@ export default {
 
         week.push({
           date: d.format(),
-          isSameDay: d.isSame(moment(this.date).startOf('day')),
-          isDifferentMonth: d.month() !== moment(this.date).month()
+          isSelectionDay: d.isSame(moment(this.date).startOf('day')),
+          isDifferentMonth: d.month() !== moment(this.date).month(),
+          isToday: d.isSame(moment().startOf('day'))
         })
         d = d.add(1, 'day')
       }
@@ -91,8 +92,9 @@ export default {
 
     dayClasses (day) {
       return {
-        'same-day': day.isSameDay,
-        'is-different-month': day.isDifferentMonth
+        'is-selection-day': day.isSelectionDay,
+        'is-different-month': day.isDifferentMonth,
+        'is-today': day.isToday
       }
     }
   }
@@ -102,7 +104,8 @@ export default {
 <style scoped>
 table {
   border-collapse: collapse;
-  font-size: 10px;
+  font-size: 11px;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 tr {
@@ -117,8 +120,8 @@ td, th {
 
 th {
   vertical-align: bottom;
-  font-weight: normal;
-  padding: 2px 4px;
+  padding: 4px;
+  color: #bbbbbb;
 }
 
 thead {
@@ -137,8 +140,13 @@ thead {
   background-color: #e8e8e8;
 }
 
-.day-cell > a.same-day {
+.day-cell > a.is-selection-day {
   background-color: #bfbfbf;
+  color: #fff;
+}
+
+.day-cell > a.is-selection-day.is-today {
+  background-color: #0088f3;
   color: #fff;
 }
 
@@ -148,5 +156,9 @@ thead {
 
 .day-cell > a.is-different-month {
   color: #ddd;
+}
+
+.day-cell > a.is-today {
+  color: #0088f3;
 }
 </style>
