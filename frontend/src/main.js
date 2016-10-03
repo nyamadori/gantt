@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import App from './App'
 import Calendar from './components/Calendar'
-import DatePicker from './components/DatePicker'
+import DateInput from './components/DateInput'
 
-Vue.component('date-picker', DatePicker)
+Vue.component('date-input', DateInput)
 Vue.component('calendar', Calendar)
 
 /* eslint-disable no-new */

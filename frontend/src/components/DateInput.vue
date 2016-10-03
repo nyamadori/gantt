@@ -1,5 +1,5 @@
 <template>
-  <span class="date-picker" v-el:container @click="onClick">
+  <span class="date-input" v-el:container @click="onClick">
     <span class="inputs-container" v-el:inputs-container>
       <input
         class="year-input"
@@ -201,7 +201,7 @@ export default {
 </script>
 
 <style scoped>
-.date-picker, .inputs-container {
+.date-input, .inputs-container {
   display: inline-flex;
   position: relative;
   font-family: Helvetica, Arial, sans-serif;
