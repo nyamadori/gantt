@@ -1,5 +1,5 @@
 <template>
-  <div class="calendar">
+  <div class="calendar" v-el:container @focusin="onFocusIn" @focusout="onFocusOut">
     <h1 class="header">{{ date | dateFormat 'YYYY年MM月' }}</h1>
     <a href="#" @click.prevent="prevMonth">前月</a>
     <a href="#" @click.prevent="currentMonth">今日</a>
@@ -101,6 +101,18 @@ export default {
         'is-selection-day': day.isSelectionDay,
         'is-different-month': day.isDifferentMonth,
         'is-today': day.isToday
+      }
+    },
+
+    onFocusOut (e) {
+      if (!this.$els.container.contains(e.relatedTarget)) {
+        this.$dispatch('blurred')
+      }
+    },
+
+    onFocusIn (e) {
+      if (!this.$els.container.contains(e.relatedTarget)) {
+        this.$dispatch('focused')
       }
     }
   }
