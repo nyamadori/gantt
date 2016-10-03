@@ -120,6 +120,8 @@ table {
   border-collapse: collapse;
   font-size: 11px;
   font-family: Helvetica, Arial, sans-serif;
+  table-layout: fixed;
+  width: 161px;
 }
 
 tr {
