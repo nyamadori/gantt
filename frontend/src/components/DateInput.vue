@@ -125,18 +125,10 @@ export default {
     }
   },
 
-  compiled () {
-    document.addEventListener('click', this.onClickDocument.bind(this))
-  },
-
   ready () {
     this.font = window.getComputedStyle(this.$els.container, null).getPropertyValue('font')
     this.$inputs = ['year', 'month', 'day'].map((name) => this.$els[name + 'Input'])
     this.focusIndex = 0
-  },
-
-  destroyed () {
-    document.removeEventListener('click', this.onClickDocument)
   },
 
   methods: {
@@ -176,21 +168,11 @@ export default {
       this.focusIndex = this.$inputs.indexOf(e.target)
     },
 
-    onClick (e) {
-      this.isEditing = true
-    },
-
     calendarStyle () {
       return {
         position: 'absolute',
         top: window.getComputedStyle(this.$els.inputsContainer, null).height
       }
-    },
-
-    onClickDocument (e) {
-      if (this.$els.container.contains(e.target)) return
-
-      this.isEditing = false
     },
 
     onCalendarChanged (date) {
