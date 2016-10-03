@@ -1,5 +1,5 @@
 <template>
-  <span class="date-input" v-el:container @click="onClick">
+  <span class="date-input" v-el:container>
     <span class="inputs-container" v-el:inputs-container>
       <input
         class="year-input"
@@ -34,11 +34,6 @@
         @keydown.left.prevent="focusPrev"
         @keydown.right.prevent="focusNext"></input>
     </span>
-    <calendar
-      v-if="isEditing"
-      :date="date"
-      :style="calendarStyle()"
-      @changed="onCalendarChanged"></calendar>
   </span>
 </template>
 
