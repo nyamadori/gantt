@@ -1,12 +1,12 @@
 <template>
-  <span class="date-input" v-el:container>
+  <span class="date-input" v-el:container @focusin="onFocusIn" @focusout="onFocusOut">
     <span class="inputs-container" v-el:inputs-container>
       <input
         class="year-input"
         :style="numericalInputStyle(font, '9999')"
         v-el:year-input
         v-model="year" number
-        @click="inputClicked"
+        @focus="inputFocused"
         @keydown.up.prevent="yearUp"
         @keydown.down.prevent="yearDown"
         @keydown.left.prevent="focusPrev"
@@ -17,7 +17,7 @@
         :style="numericalInputStyle(font, '99')"
         v-el:month-input
         v-model="month" number
-        @click="inputClicked"
+        @focus="inputFocused"
         @keydown.up.prevent="monthUp"
         @keydown.down.prevent="monthDown"
         @keydown.left.prevent="focusPrev"
@@ -28,7 +28,7 @@
         :style="numericalInputStyle(font, '99')"
         v-el:day-input
         v-model="day" number
-        @click="inputClicked"
+        @focus="inputFocused"
         @keydown.up.prevent="dayUp"
         @keydown.down.prevent="dayDown"
         @keydown.left.prevent="focusPrev"
@@ -159,7 +159,7 @@ export default {
       this.focusIndex = this.focusIndex + 1
     },
 
-    inputClicked (e) {
+    inputFocused (e) {
       this.focusIndex = this.$inputs.indexOf(e.target)
     },
 
@@ -172,6 +172,18 @@ export default {
 
     onCalendarChanged (date) {
       this.currentDate = date
+    },
+
+    onFocusOut (e) {
+      if (!this.$els.container.contains(e.relatedTarget)) {
+        this.$dispatch('blurred')
+      }
+    },
+
+    onFocusIn (e) {
+      if (!this.$els.container.contains(e.relatedTarget)) {
+        this.$dispatch('focused')
+      }
     }
   }
 }
