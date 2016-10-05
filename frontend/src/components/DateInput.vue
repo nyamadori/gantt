@@ -1,5 +1,5 @@
 <template>
-  <span class="date-picker" v-el:container>
+  <span class="date-input" v-el:container>
     <input
       class="year-input"
       :style="numericalInputStyle(font, '9999')"
@@ -164,7 +164,7 @@ export default {
 </script>
 
 <style scoped>
-.date-picker {
+.date-input {
   display: inline-flex;
 }
 
