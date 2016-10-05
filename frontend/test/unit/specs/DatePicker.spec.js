@@ -26,6 +26,7 @@ describe('DateInput.vue', () => {
         template: `<div><date-input date="${this.date}" v-ref:date-input></date-input></div>`,
         components: { DateInput }
       }).$mount()
+      this.vm.$appendTo('body')
       this.dateInput = this.vm.$refs.dateInput
     })
 

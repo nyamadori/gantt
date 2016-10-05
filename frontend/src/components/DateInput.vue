@@ -1,37 +1,39 @@
 <template>
-  <span class="date-input" v-el:container>
-    <input
-      class="year-input"
-      :style="numericalInputStyle(font, '9999')"
-      v-el:year-input
-      v-model="year" number
-      @click="inputClicked"
-      @keydown.up.prevent="yearUp"
-      @keydown.down.prevent="yearDown"
-      @keydown.left.prevent="focusPrev"
-      @keydown.right.prevent="focusNext"></input>
-    /
-    <input
-      class="month-input"
-      :style="numericalInputStyle(font, '99')"
-      v-el:month-input
-      v-model="month" number
-      @click="inputClicked"
-      @keydown.up.prevent="monthUp"
-      @keydown.down.prevent="monthDown"
-      @keydown.left.prevent="focusPrev"
-      @keydown.right.prevent="focusNext"></input>
-    /
-    <input
-      class="day-input"
-      :style="numericalInputStyle(font, '99')"
-      v-el:day-input
-      v-model="day" number
-      @click="inputClicked"
-      @keydown.up.prevent="dayUp"
-      @keydown.down.prevent="dayDown"
-      @keydown.left.prevent="focusPrev"
-      @keydown.right.prevent="focusNext"></input>
+  <span class="date-input" v-el:container @focusin="onFocusIn" @focusout="onFocusOut">
+    <span class="inputs-container" v-el:inputs-container>
+      <input
+        class="year-input"
+        :style="numericalInputStyle(font, '9999')"
+        v-el:year-input
+        v-model="year" number
+        @focus="inputFocused"
+        @keydown.up.prevent="yearUp"
+        @keydown.down.prevent="yearDown"
+        @keydown.left.prevent="focusPrev"
+        @keydown.right.prevent="focusNext"></input>
+      /
+      <input
+        class="month-input"
+        :style="numericalInputStyle(font, '99')"
+        v-el:month-input
+        v-model="month" number
+        @focus="inputFocused"
+        @keydown.up.prevent="monthUp"
+        @keydown.down.prevent="monthDown"
+        @keydown.left.prevent="focusPrev"
+        @keydown.right.prevent="focusNext"></input>
+      /
+      <input
+        class="day-input"
+        :style="numericalInputStyle(font, '99')"
+        v-el:day-input
+        v-model="day" number
+        @focus="inputFocused"
+        @keydown.up.prevent="dayUp"
+        @keydown.down.prevent="dayDown"
+        @keydown.left.prevent="focusPrev"
+        @keydown.right.prevent="focusNext"></input>
+    </span>
   </span>
 </template>
 
@@ -50,7 +52,8 @@ export default {
     return {
       font: '',
       focusCounter: 0,
-      currentDate: null
+      currentDate: null,
+      isEditing: false
     }
   },
 
@@ -117,7 +120,7 @@ export default {
     }
   },
 
-  compiled () {
+  ready () {
     this.font = window.getComputedStyle(this.$els.container, null).getPropertyValue('font')
     this.$inputs = ['year', 'month', 'day'].map((name) => this.$els[name + 'Input'])
     this.focusIndex = 0
@@ -156,16 +159,43 @@ export default {
       this.focusIndex = this.focusIndex + 1
     },
 
-    inputClicked (e) {
+    inputFocused (e) {
       this.focusIndex = this.$inputs.indexOf(e.target)
+    },
+
+    calendarStyle () {
+      return {
+        position: 'absolute',
+        top: window.getComputedStyle(this.$els.inputsContainer, null).height
+      }
+    },
+
+    onCalendarChanged (date) {
+      this.currentDate = date
+    },
+
+    onFocusOut (e) {
+      if (!this.$els.container.contains(e.relatedTarget)) {
+        console.log(this, 'blurred')
+        this.$dispatch('blurred')
+      }
+    },
+
+    onFocusIn (e) {
+      if (!this.$els.container.contains(e.relatedTarget)) {
+        console.log(this, 'focused')
+        this.$dispatch('focused')
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-.date-input {
+.date-input, .inputs-container {
   display: inline-flex;
+  position: relative;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 input {
