@@ -176,12 +176,14 @@ export default {
 
     onFocusOut (e) {
       if (!this.$els.container.contains(e.relatedTarget)) {
+        console.log(this, 'blurred')
         this.$dispatch('blurred')
       }
     },
 
     onFocusIn (e) {
       if (!this.$els.container.contains(e.relatedTarget)) {
+        console.log(this, 'focused')
         this.$dispatch('focused')
       }
     }
