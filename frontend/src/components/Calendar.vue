@@ -1,9 +1,9 @@
 <template>
   <div class="calendar" v-el:container @focusin="onFocusIn" @focusout="onFocusOut">
     <h1 class="header">{{ date | dateFormat 'YYYY年MM月' }}</h1>
-    <a href="#" @click.prevent="prevMonth">前月</a>
-    <a href="#" @click.prevent="currentMonth">今日</a>
-    <a href="#" @click.prevent="nextMonth">次月</a>
+    <span @click.prevent="prevMonth">前月</span>
+    <span @click.prevent="currentMonth">今日</span>
+    <span @click.prevent="nextMonth">次月</span>
 
     <table>
       <thead>
@@ -11,10 +11,10 @@
       </thead>
       <tbody>
         <tr v-for="week in weekRows">
-          <td class="day-cell" v-for="day in week">
-            <a href="#" @click.prevent.stop="selectDay(day)" :class="dayClasses(day)">
-              {{ day.date | dateFormat 'D' }}
-            </a>
+          <td
+            class="day-cell" v-for="day in week"
+            @click.prevent.stop="selectDay(day)" :class="dayClasses(day)">
+            {{ day.date | dateFormat 'D' }}
           </td>
         </tr>
       </tbody>
@@ -158,24 +158,23 @@ thead {
   border-bottom: 1px solid #ddd;
 }
 
-.day-cell > a {
-  display: block;
+.day-cell {
   padding: 4px;
   border-radius: 2px;
   color: #000;
   text-decoration: none;
 }
 
-.day-cell > a:hover {
+.day-cell:hover {
   background-color: #e8e8e8;
 }
 
-.day-cell > a.is-selection-day {
+.day-cell.is-selection-day {
   background-color: #bfbfbf;
   color: #fff;
 }
 
-.day-cell > a.is-selection-day.is-today {
+.day-cell.is-selection-day.is-today {
   background-color: #0088f3;
   color: #fff;
 }
@@ -184,11 +183,11 @@ thead {
   font-size: 12px;
 }
 
-.day-cell > a.is-different-month {
+.day-cell.is-different-month {
   color: #ddd;
 }
 
-.day-cell > a.is-today {
+.day-cell.is-today {
   color: #0088f3;
 }
 </style>
