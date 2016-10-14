@@ -75,6 +75,7 @@ export default {
 }
 
 .inner-input.has-focus {
-  background-color: rgb(163, 201, 237);
+  border-radius: 2px;
+  background-color: rgb(184, 213, 241);
 }
 </style>

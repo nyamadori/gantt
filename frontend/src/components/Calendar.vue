@@ -125,7 +125,7 @@ export default {
 .calendar {
   display: inline-block;
   padding: 4px;
-  border: 1px solid #ddd;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   background-color: #fff;
 }

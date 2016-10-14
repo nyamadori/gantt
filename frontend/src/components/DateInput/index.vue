@@ -27,7 +27,7 @@
     <calendar
       v-if="hasFocus"
       :date="currentDate"
-      :style="{ position: 'absolute', top: '20px' }"
+      :style="calendarStyle"
       @changed="onCalendarChanged"></calendar>
   </span>
 </template>
@@ -60,6 +60,7 @@ export default {
       focusIndexBase: 0,
       hasFocus: false,
       tabShift: false,
+      height: 0,
       dateChanges: {
         originalValue: this.date,
         newValue: null
@@ -140,11 +141,16 @@ export default {
 
     focusKey () {
       return this.$inputKeys[this.focusIndex]
+    },
+
+    calendarStyle () {
+      return { position: 'absolute', top: this.height }
     }
   },
 
   ready () {
     this.font = window.getComputedStyle(this.$els.container, null).getPropertyValue('font')
+    this.height = window.getComputedStyle(this.$els.container, null).getPropertyValue('height')
     this.$inputKeys = ['year', 'month', 'day']
     this.$inputs = this.$inputKeys.map((name) => this.$refs[name])
     this.focusIndex = 0
@@ -310,28 +316,42 @@ export default {
 </script>
 
 <style scoped>
-.date-input, .inputs-container {
+.date-input {
   display: inline-flex;
   position: relative;
   font-family: Helvetica, Arial, sans-serif;
 }
 
-input {
-  box-sizing: content-box;
-  padding: 0 2px;
-  border-radius: 2px;
-  border-style: none;
-  border-bottom: 1px solid transparent;
-  font-family: inherit;
-  background: transparent;
-  text-align: right;
-  font-size: inherit;
-  outline: 0;
-  color: transparent;
-  text-shadow: 0 0 0 #000;
+.date-input:focus {
+  border-bottom: 2px solid rgb(184, 213, 241);
+  outline: 0
 }
 
-input:focus {
-  background-color: rgb(163, 201, 237)
+.calendar {
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
+/*
+.calendar:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 32px;
+  top: -10px;
+  z-index: 100;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 10px solid #ddd;
+}
+
+.calendar:after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 32px;
+  top: -8px;
+  z-index: 200;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 10px solid #fff;
+}*/
 </style>
