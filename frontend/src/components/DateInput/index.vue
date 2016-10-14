@@ -330,28 +330,4 @@ export default {
 .calendar {
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
-/*
-.calendar:before {
-  content: '';
-  display: block;
-  position: absolute;
-  left: 32px;
-  top: -10px;
-  z-index: 100;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 10px solid #ddd;
-}
-
-.calendar:after {
-  content: '';
-  display: block;
-  position: absolute;
-  left: 32px;
-  top: -8px;
-  z-index: 200;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 10px solid #fff;
-}*/
 </style>
