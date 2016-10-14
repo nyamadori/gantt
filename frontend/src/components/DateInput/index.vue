@@ -318,16 +318,16 @@ export default {
 <style scoped>
 .date-input {
   display: inline-flex;
+  padding-bottom: 3px;
   position: relative;
   font-family: Helvetica, Arial, sans-serif;
 }
 
 .date-input:focus {
-  border-bottom: 2px solid rgb(184, 213, 241);
   outline: 0
 }
 
 .calendar {
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
 }
 </style>
