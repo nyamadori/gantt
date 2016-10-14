@@ -328,6 +328,8 @@ export default {
 }
 
 .calendar {
+  position: absolute;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 </style>
