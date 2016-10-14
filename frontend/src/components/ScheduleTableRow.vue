@@ -1,27 +1,30 @@
 <template>
   <div
     class="schedule-table-row"
-    :style="[rowStyle]">
-      <schedule-table-handle
-        :date="schedule.startOn"
-        @move="onMoveLeftHandle"></schedule-table-handle>
-      <schedule-table-handle
-        class="schedule-table-ribbon"
-        :date="schedule.startOn"
-        :attach="'left'"
-        :style="[ribbonStyle]"
-        @move="onMoveRibbonHandle">
-        <div class="inner">
-          <span class="title">{{ schedule.title }}</span>
-        </div>
-      </schedule-table-handle>
-      <schedule-table-handle
-        :date="schedule.endOn"
-        :scale-base="'cell'"
-        @move="onMoveRightHandle"></schedule-table-handle>
+    :style="[rowStyle]"
+  >
+    <schedule-table-handle
+      :date="schedule.startOn"
+      @move="onMoveLeftHandle"></schedule-table-handle>
+    <schedule-table-handle
+      class="schedule-table-ribbon"
+      :date="schedule.startOn"
+      :attach="'left'"
+      :style="[ribbonStyle]"
+      @move="onMoveRibbonHandle">
+      <div class="inner">
+        <span class="title">{{ schedule.title }}</span>
+      </div>
+    </schedule-table-handle>
+    <schedule-table-handle
+      :date="schedule.endOn"
+      :scale-base="'cell'"
+      @move="onMoveRightHandle"></schedule-table-handle>
 
     <div class="schedule-table-cells">
-      <div v-for="x in tableDates" class="cell" :style="[cellStyle]"></div>
+      <div v-for="(key, days) in tableHeaders" class="cell month-cell">
+        <div v-for="day in days" class="cell day-cell" :style="[cellStyle]"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -31,7 +34,7 @@ import moment from 'moment'
 import ScheduleTableHandle from './ScheduleTableHandle'
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
-import { tableLength, tableDates, tableCell, table } from '../vuex/getters'
+import { tableLength, tableHeaders, tableCell, table } from '../vuex/getters'
 import { setSchedule } from '../vuex/actions'
 
 export default {
@@ -43,7 +46,7 @@ export default {
   },
 
   vuex: {
-    getters: { tableLength, tableDates, tableCell, table },
+    getters: { tableLength, tableHeaders, tableCell, table },
     actions: { setSchedule }
   },
 
@@ -117,15 +120,19 @@ export default {
   display: flex;
   position: relative;
   line-height: 1;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #ddd;
 }
 
-.schedule-table-cells {
+.schedule-table-cells, .cell {
   display: flex;
 }
 
-.schedule-table-cells > .cell {
-  border-right: 1px solid #f1f1f1;
+.day-cell {
+  border-right: 1px solid #f4f4f4;
+}
+
+.day-cell:last-child {
+  border-right: 2px solid #f4f4f4;
 }
 
 .schedule-table-ribbon {

@@ -1,48 +1,51 @@
 <template>
-  <div class="schedule-table-header month" :style="[headerRowStyle]">
-    <div
-      :style="[headerCellStyle, monthHeaderCellStyle(month)]"
-      v-for="month in tableMonths" class="cell">
-      {{ month.start | dateFormat 'YYYY/MM' }}
-    </div>
-  </div>
+  <div class="schedule-table-header">
+    <div class="cell month-cell" v-for="(month, days) in tableHeaders">
+      <div class="title">
+        {{ month }}
+      </div>
 
-  <div class="schedule-table-header date" :style="[headerRowStyle]">
-    <div
-      v-for="date in tableDates"
-      class="cell"
-      :style="[headerCellStyle]">{{ date | dateFormat 'D' }}</div>
+      <div class="schedule-table-header">
+        <div
+          class="cell day-cell" v-for="day in days" :style="headerCellStyle"
+        >
+          <div class="title">{{ day }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .schedule-table-header {
   display: flex;
-  align-items: center;
-  border-bottom: 1px solid #dddddd;
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 1rem;
+}
+
+.cell {
   background-color: #f6f6f6;
 }
 
-.schedule-table-header > .cell {
+.title {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  border-bottom: 1px solid #ddd;
 }
 
-.schedule-table-header.month {
-  height: 28px;
-  font-size: 0.9rem;
+.month-cell > .title {
+  height: 24px;
+  border-right: 2px solid #ddd;
 }
 
-.schedule-table-header.month > .cell {
-  border-right: 1px solid #dddddd;
-}
-
-.schedule-table-header.date {
-  height: 16px;
+.day-cell > .title {
+  height: 20px;
   font-size: 0.8rem;
+}
+
+.day-cell:last-child > .title {
+  border-right: 2px solid #ddd;
 }
 </style>
 
@@ -50,13 +53,13 @@
 import moment from 'moment'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
 import { dateFormat } from '../filters'
-import { tableCell, tableDates, tableLength, tableMonths } from '../vuex/getters'
+import { tableCell, tableLength, tableHeaders } from '../vuex/getters'
 
 export default {
   mixins: [ ScheduleMeasurement ],
   vuex: {
     getters: {
-      tableCell, tableDates, tableLength, tableMonths
+      tableCell, tableLength, tableHeaders
     }
   },
   filters: { dateFormat },

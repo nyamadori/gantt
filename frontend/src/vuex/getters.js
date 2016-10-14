@@ -8,6 +8,22 @@ export function table (state) {
   return state.table
 }
 
+export function tableHeaders (state) {
+  const len = tableLength(state)
+  const start = state.table.start
+  const result = {}
+
+  for (var i = 0; i < len; i++) {
+    const current = moment(start).add(i, 'days')
+    const key = current.format('YYYY/MM')
+
+    if (!result[key]) result[key] = []
+    result[key].push(current.format('DD'))
+  }
+
+  return result
+}
+
 export function tableLength (state) {
   const start = moment(state.table.start)
   const end = moment(state.table.end)
@@ -21,28 +37,6 @@ export function tableDates (state) {
 
   for (var i = 0; i < len; i++) {
     result.push(moment(start).add(i, 'days').format())
-  }
-
-  return result
-}
-
-export function tableMonths (state) {
-  var result = []
-  var rangeStart = moment(state.table.start)
-  var rangeEnd = moment(state.table.end)
-
-  var end = rangeStart.clone().month(rangeStart.month() + 1).date(1)
-  result.push({ start: rangeStart.clone().format(), end: end.format() })
-
-  while (true) {
-    var start = end
-
-    if (end.isSameOrAfter(rangeEnd)) {
-      break
-    } else {
-      end = start.clone().add(1, 'months')
-      result.push({ start: start.format(), end: end.format() })
-    }
   }
 
   return result
