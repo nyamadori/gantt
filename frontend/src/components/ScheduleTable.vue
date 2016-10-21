@@ -4,6 +4,8 @@
     <schedule-table-row
       v-for="schedule in schedules | orderBy compareSchedule"
       :schedule="schedule"></schedule-table-row>
+    <schedule-table-row :schedule="{ isNew: true, startOn: '', endOn: ''}">
+    </schedule-table-row>
   </div>
 </template>
 

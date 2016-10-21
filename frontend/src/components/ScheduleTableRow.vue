@@ -1,25 +1,41 @@
 <template>
   <div
     class="schedule-table-row"
+    v-el:container
     :style="[rowStyle]"
+    @mousemove="onMouseMove"
+    @click="onClick"
   >
-    <schedule-table-handle
-      :date="schedule.startOn"
-      @move="onMoveLeftHandle"></schedule-table-handle>
-    <schedule-table-handle
-      class="schedule-table-ribbon"
-      :date="schedule.startOn"
-      :attach="'left'"
-      :style="[ribbonStyle]"
-      @move="onMoveRibbonHandle">
-      <div class="inner">
-        <span class="title">{{ schedule.title }}</span>
-      </div>
-    </schedule-table-handle>
-    <schedule-table-handle
-      :date="schedule.endOn"
-      :scale-base="'cell'"
-      @move="onMoveRightHandle"></schedule-table-handle>
+    <div v-if="!currentSchedule.isNew">
+      <schedule-table-handle
+        :date="currentSchedule.startOn"
+        @move="onMoveLeftHandle"></schedule-table-handle>
+      <schedule-table-handle
+        class="schedule-table-ribbon"
+        :date="currentSchedule.startOn"
+        :attach="'left'"
+        :style="[ribbonStyle]"
+        @move="onMoveRibbonHandle">
+        <div class="inner">
+          <span class="title">{{ schedule.title }}</span>
+        </div>
+      </schedule-table-handle>
+      <schedule-table-handle
+        :date="currentSchedule.endOn"
+        :scale-base="'cell'"
+        @move="onMoveRightHandle"></schedule-table-handle>
+    </div>
+
+    <div v-if="currentSchedule.isNew">
+      <schedule-table-handle
+        v-if="currentSchedule.startOn"
+        :date="currentSchedule.startOn"
+        :style="{ 'background-color': '#000' }"></schedule-table-handle>
+      <schedule-table-handle
+        v-if="currentSchedule.endOn"
+        :date="currentSchedule.endOn"
+        :style="{ 'background-color': '#000' }"></schedule-table-handle>
+    </div>
 
     <div class="schedule-table-cells">
       <div v-for="(key, days) in tableHeaders" class="cell month-cell">
@@ -35,7 +51,7 @@ import ScheduleTableHandle from './ScheduleTableHandle'
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
 import { tableLength, tableHeaders, tableCell, table } from '../vuex/getters'
-import { setSchedule } from '../vuex/actions'
+import { setSchedule, addSchedule } from '../vuex/actions'
 
 export default {
   mixins: [ScheduleComparable, ScheduleMeasurement],
@@ -47,7 +63,7 @@ export default {
 
   vuex: {
     getters: { tableLength, tableHeaders, tableCell, table },
-    actions: { setSchedule }
+    actions: { setSchedule, addSchedule }
   },
 
   props: {
@@ -56,11 +72,30 @@ export default {
 
   data () {
     return {
-      mouseOvering: false
+      scheduleBase: Object.assign({}, this.schedule),
+      createStatus: 'startOn' // 'startOn' -> 'endOn' -> finished
     }
   },
 
+  ready () {
+    window.addEventListener('keyup', this.onWindowKeyUp.bind(this))
+  },
+
+  beforeDestroy () {
+    window.removeEventListener(this.onWindowKeyUp)
+  },
+
   computed: {
+    currentSchedule: {
+      get () {
+        return this.scheduleBase
+      },
+
+      set (value) {
+        this.scheduleBase = value
+      }
+    },
+
     rowStyle () {
       return {
         width: this.tableLength * this.tableCell.width + 'px',
@@ -77,39 +112,92 @@ export default {
 
     ribbonStyle () {
       return {
-        width: this.scheduleWidth(this.schedule) + 'px'
+        width: this.scheduleWidth(this.currentSchedule) + 'px'
       }
-    },
-
-    isNew () {
-      return this.schedule.id === null
-    },
-
-    newScheduleHandleVisible () {
-      return this.isNew && this.mouseOvering
     }
   },
 
   methods: {
+    createSchedule () {
+      const newSchedule = Object.assign({}, this.currentSchedule)
+      newSchedule.isNew = false
+      this.createStatus = 'startOn'
+      this.currentSchedule.startOn = null
+      this.currentSchedule.endOn = null
+
+      this.addSchedule(newSchedule)
+    },
+
+    update () {
+      this.setSchedule(this.schedule, 'startOn', this.currentSchedule.startOn)
+      this.setSchedule(this.schedule, 'endOn', this.currentSchedule.endOn)
+    },
+
     onMoveLeftHandle (date) {
-      if (moment(date).isBefore(moment(this.schedule.endOn).add(1, 'days'))) {
-        this.setSchedule(this.schedule, 'startOn', date)
+      if (moment(date).isBefore(moment(this.currentSchedule.endOn).add(1, 'days'))) {
+        this.currentSchedule.startOn = date
+        this.update()
       }
     },
 
     onMoveRightHandle (date) {
-      if (moment(this.schedule.startOn).isBefore(moment(date).add(1, 'days'))) {
-        this.setSchedule(this.schedule, 'endOn', date)
+      if (moment(this.currentSchedule.startOn).isBefore(moment(date).add(1, 'days'))) {
+        this.currentSchedule.endOn = date
+        this.update()
       }
     },
 
     onMoveRibbonHandle (date) {
-      const diff = moment(date).diff(moment(this.schedule.startOn), 'days')
-      this.setSchedule(
-        this.schedule, 'startOn',
-        moment(this.schedule.startOn).add(diff, 'days').format())
-      this.setSchedule(this.schedule, 'endOn',
-        moment(this.schedule.endOn).add(diff, 'days').format())
+      const diff = moment(date).diff(moment(this.currentSchedule.startOn), 'days')
+      this.currentSchedule.startOn =
+        moment(this.currentSchedule.startOn).add(diff, 'days').format()
+      this.currentSchedule.endOn =
+        moment(this.currentSchedule.endOn).add(diff, 'days').format()
+      this.update()
+    },
+
+    onMouseMove (e) {
+      if (!this.currentSchedule.isNew) return
+
+      const x = e.clientX - this.$els.container.offsetLeft + this.table.scrollLeft
+
+      switch (this.createStatus) {
+        case 'startOn':
+          this.currentSchedule.startOn = this.toDate(x)
+          break
+        case 'endOn':
+          this.currentSchedule.endOn = this.toDate(x)
+          break
+      }
+    },
+
+    onClick (e) {
+      if (!this.schedule.isNew) return
+
+      switch (this.createStatus) {
+        case 'startOn':
+          this.createStatus = 'endOn'
+          break
+        case 'endOn':
+          this.createStatus = 'finished'
+          this.createSchedule()
+          break
+      }
+    },
+
+    onMouseUp (e) {
+      console.log(e.target)
+    },
+
+    onWindowKeyUp (e) {
+      if (e.key !== 'Escape') return
+
+      this.onEscape(e)
+    },
+
+    onEscape (e) {
+      this.createStatus = 'startOn'
+      this.currentSchedule.endOn = null
     }
   }
 }
