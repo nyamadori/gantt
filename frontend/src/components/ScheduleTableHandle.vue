@@ -32,6 +32,12 @@ export default {
     getters: { table, tableCell, handle }
   },
 
+  watch: {
+    date (v) {
+      console.log('watch', v)
+    }
+  },
+
   data () {
     return {
       _date: null,

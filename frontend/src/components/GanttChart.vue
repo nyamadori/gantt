@@ -1,7 +1,7 @@
 <template>
   <div class="gantt-chart">
     <schedule-title-list :schedules="schedules"></schedule-title-list>
-    <schedule-table :schedule="schedules"></schedule-table>
+    <schedule-table :schedule="schedules" @scroll="onScroll"></schedule-table>
   </div>
 </template>
 
@@ -27,7 +27,8 @@
 <script>
 import ScheduleTable from './ScheduleTable'
 import ScheduleTitleList from './ScheduleTitleList'
-import { schedules } from '../vuex/getters'
+import { schedules, table } from '../vuex/getters'
+import { setTable } from '../vuex/actions'
 
 export default {
   components: {
@@ -36,7 +37,8 @@ export default {
   },
 
   vuex: {
-    getters: { schedules }
+    getters: { schedules, table },
+    actions: { setTable }
   },
 
   methods: {

@@ -1,25 +1,37 @@
 <template>
   <div
     class="schedule-table-row"
+    v-el:container
     :style="[rowStyle]"
+    @mousemove="onMouseMove"
+    @mousedown="onMouseDown"
+    @mouseup="onMouseUp"
   >
-    <schedule-table-handle
-      :date="schedule.startOn"
-      @move="onMoveLeftHandle"></schedule-table-handle>
-    <schedule-table-handle
-      class="schedule-table-ribbon"
-      :date="schedule.startOn"
-      :attach="'left'"
-      :style="[ribbonStyle]"
-      @move="onMoveRibbonHandle">
-      <div class="inner">
-        <span class="title">{{ schedule.title }}</span>
-      </div>
-    </schedule-table-handle>
-    <schedule-table-handle
-      :date="schedule.endOn"
-      :scale-base="'cell'"
-      @move="onMoveRightHandle"></schedule-table-handle>
+    <div v-if="!currentSchedule.isNew">
+      <schedule-table-handle
+        :date="currentSchedule.startOn"
+        @move="onMoveLeftHandle"></schedule-table-handle>
+      <schedule-table-handle
+        class="schedule-table-ribbon"
+        :date="currentSchedule.startOn"
+        :attach="'left'"
+        :style="[ribbonStyle]"
+        @move="onMoveRibbonHandle">
+        <div class="inner">
+          <span class="title">{{ schedule.title }}</span>
+        </div>
+      </schedule-table-handle>
+      <schedule-table-handle
+        :date="currentSchedule.endOn"
+        :scale-base="'cell'"
+        @move="onMoveRightHandle"></schedule-table-handle>
+    </div>
+
+    <div v-if="currentSchedule.isNew">
+      <schedule-table-handle
+        :date="currentSchedule.startOn"
+        :style="{ 'background-color': '#000' }"></schedule-table-handle>
+    </div>
 
     <div class="schedule-table-cells">
       <div v-for="(key, days) in tableHeaders" class="cell month-cell">
@@ -56,11 +68,21 @@ export default {
 
   data () {
     return {
-      mouseOvering: false
+      scheduleBase: Object.assign({}, this.schedule)
     }
   },
 
   computed: {
+    currentSchedule: {
+      get () {
+        return this.scheduleBase
+      },
+
+      set (value) {
+        this.scheduleBase = value
+      }
+    },
+
     rowStyle () {
       return {
         width: this.tableLength * this.tableCell.width + 'px',
@@ -77,39 +99,53 @@ export default {
 
     ribbonStyle () {
       return {
-        width: this.scheduleWidth(this.schedule) + 'px'
+        width: this.scheduleWidth(this.currentSchedule) + 'px'
       }
-    },
-
-    isNew () {
-      return this.schedule.id === null
-    },
-
-    newScheduleHandleVisible () {
-      return this.isNew && this.mouseOvering
     }
   },
 
   methods: {
+    update () {
+      this.setSchedule(this.schedule, 'startOn', this.currentSchedule.startOn)
+      this.setSchedule(this.schedule, 'endOn', this.currentSchedule.endOn)
+    },
+
     onMoveLeftHandle (date) {
-      if (moment(date).isBefore(moment(this.schedule.endOn).add(1, 'days'))) {
-        this.setSchedule(this.schedule, 'startOn', date)
+      if (moment(date).isBefore(moment(this.currentSchedule.endOn).add(1, 'days'))) {
+        this.currentSchedule.startOn = date
+        this.update()
       }
     },
 
     onMoveRightHandle (date) {
-      if (moment(this.schedule.startOn).isBefore(moment(date).add(1, 'days'))) {
-        this.setSchedule(this.schedule, 'endOn', date)
+      if (moment(this.currentSchedule.startOn).isBefore(moment(date).add(1, 'days'))) {
+        this.currentSchedule.endOn = date
+        this.update()
       }
     },
 
     onMoveRibbonHandle (date) {
-      const diff = moment(date).diff(moment(this.schedule.startOn), 'days')
-      this.setSchedule(
-        this.schedule, 'startOn',
-        moment(this.schedule.startOn).add(diff, 'days').format())
-      this.setSchedule(this.schedule, 'endOn',
-        moment(this.schedule.endOn).add(diff, 'days').format())
+      const diff = moment(date).diff(moment(this.currentSchedule.startOn), 'days')
+      this.currentSchedule.startOn =
+        moment(this.currentSchedule.startOn).add(diff, 'days').format()
+      this.currentSchedule.endOn =
+        moment(this.currentSchedule.endOn).add(diff, 'days').format()
+      this.update()
+    },
+
+    onMouseMove (e) {
+      if (!this.currentSchedule.isNew) return
+
+      const x = e.clientX - this.$els.container.offsetLeft + this.table.scrollLeft
+      this.currentSchedule.startOn = this.toDate(x)
+    },
+
+    onMouseDown (e) {
+      console.log(e)
+    },
+
+    onMouseUp (e) {
+      console.log(e)
     }
   }
 }

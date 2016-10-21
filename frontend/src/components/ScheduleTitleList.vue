@@ -8,7 +8,7 @@
       :schedule="schedule"
       :style="[scheduleStyle]">
       <div class="title">{{ schedule.title }}</div>
-      <div class="period">
+      <div class="period" v-if="!schedule.isNew">
         {{ schedule.startOn | dateFormat 'YYYY/MM/DD' }} ―
         {{ schedule.endOn | dateFormat 'YYYY/MM/DD' }}
       </div>
