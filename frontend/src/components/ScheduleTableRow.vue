@@ -51,7 +51,7 @@ import ScheduleTableHandle from './ScheduleTableHandle'
 import ScheduleComparable from '../mixins/ScheduleComparable'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
 import { tableLength, tableHeaders, tableCell, table } from '../vuex/getters'
-import { setSchedule } from '../vuex/actions'
+import { setSchedule, addSchedule } from '../vuex/actions'
 
 export default {
   mixins: [ScheduleComparable, ScheduleMeasurement],
@@ -63,7 +63,7 @@ export default {
 
   vuex: {
     getters: { tableLength, tableHeaders, tableCell, table },
-    actions: { setSchedule }
+    actions: { setSchedule, addSchedule }
   },
 
   props: {
@@ -118,6 +118,16 @@ export default {
   },
 
   methods: {
+    createSchedule () {
+      const newSchedule = Object.assign({}, this.currentSchedule)
+      newSchedule.isNew = false
+      this.createStatus = 'startOn'
+      this.currentSchedule.startOn = null
+      this.currentSchedule.endOn = null
+
+      this.addSchedule(newSchedule)
+    },
+
     update () {
       this.setSchedule(this.schedule, 'startOn', this.currentSchedule.startOn)
       this.setSchedule(this.schedule, 'endOn', this.currentSchedule.endOn)
@@ -162,16 +172,16 @@ export default {
     },
 
     onClick (e) {
-      console.log(e)
+      if (!this.schedule.isNew) return
+
       switch (this.createStatus) {
         case 'startOn':
           this.createStatus = 'endOn'
           break
         case 'endOn':
           this.createStatus = 'finished'
+          this.createSchedule()
           break
-        case 'finished':
-          // 何かやる。多分スケジュールの追加処理
       }
     },
 
