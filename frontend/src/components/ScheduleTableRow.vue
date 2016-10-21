@@ -4,8 +4,7 @@
     v-el:container
     :style="[rowStyle]"
     @mousemove="onMouseMove"
-    @mousedown="onMouseDown"
-    @mouseup="onMouseUp"
+    @click="onClick"
   >
     <div v-if="!currentSchedule.isNew">
       <schedule-table-handle
@@ -29,7 +28,12 @@
 
     <div v-if="currentSchedule.isNew">
       <schedule-table-handle
+        v-if="currentSchedule.startOn"
         :date="currentSchedule.startOn"
+        :style="{ 'background-color': '#000' }"></schedule-table-handle>
+      <schedule-table-handle
+        v-if="currentSchedule.endOn"
+        :date="currentSchedule.endOn"
         :style="{ 'background-color': '#000' }"></schedule-table-handle>
     </div>
 
@@ -68,8 +72,17 @@ export default {
 
   data () {
     return {
-      scheduleBase: Object.assign({}, this.schedule)
+      scheduleBase: Object.assign({}, this.schedule),
+      createStatus: 'startOn' // 'startOn' -> 'endOn' -> finished
     }
+  },
+
+  ready () {
+    window.addEventListener('keyup', this.onWindowKeyUp.bind(this))
+  },
+
+  beforeDestroy () {
+    window.removeEventListener(this.onWindowKeyUp)
   },
 
   computed: {
@@ -137,15 +150,44 @@ export default {
       if (!this.currentSchedule.isNew) return
 
       const x = e.clientX - this.$els.container.offsetLeft + this.table.scrollLeft
-      this.currentSchedule.startOn = this.toDate(x)
+
+      switch (this.createStatus) {
+        case 'startOn':
+          this.currentSchedule.startOn = this.toDate(x)
+          break
+        case 'endOn':
+          this.currentSchedule.endOn = this.toDate(x)
+          break
+      }
     },
 
-    onMouseDown (e) {
+    onClick (e) {
       console.log(e)
+      switch (this.createStatus) {
+        case 'startOn':
+          this.createStatus = 'endOn'
+          break
+        case 'endOn':
+          this.createStatus = 'finished'
+          break
+        case 'finished':
+          // 何かやる。多分スケジュールの追加処理
+      }
     },
 
     onMouseUp (e) {
-      console.log(e)
+      console.log(e.target)
+    },
+
+    onWindowKeyUp (e) {
+      if (e.key !== 'Escape') return
+
+      this.onEscape(e)
+    },
+
+    onEscape (e) {
+      this.createStatus = 'startOn'
+      this.currentSchedule.endOn = null
     }
   }
 }
