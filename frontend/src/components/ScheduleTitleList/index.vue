@@ -1,18 +1,9 @@
 <template>
   <div class="schedule-title-list">
     <h1 class="header" :style="[scheduleStyle]">スケジュール</h1>
-
-    <div
-      class="schedule"
+    <item
       v-for="schedule in schedules | orderBy compareSchedule"
-      :schedule="schedule"
-      :style="[scheduleStyle]">
-      <div class="title">{{ schedule.title }}</div>
-      <div class="period" v-if="!schedule.isNew">
-        {{ schedule.startOn | dateFormat 'YYYY/MM/DD' }} ―
-        {{ schedule.endOn | dateFormat 'YYYY/MM/DD' }}
-      </div>
-    </div>
+      :schedule="schedule"></item>
   </div>
 </template>
 
@@ -36,37 +27,21 @@
   background-color: #444;
   line-height: 1;
 }
-
-.schedule {
-  display: flex;
-  justify-content: center;
-  padding: 7px 14px;
-  height: 40px;
-  border-bottom: 1px solid #535353;
-  flex-direction: column;
-  line-height: 1;
-}
-
-.schedule > .title {
-  margin-bottom: 4px;
-}
-
-.period {
-  font-size: 0.7rem;
-  color: #8f8f8f;
-}
 </style>
 
 <script>
-import ScheduleComparable from '../mixins/ScheduleComparable'
-import { dateFormat } from '../filters'
-import { tableCell } from '../vuex/getters'
+import Item from './Item'
+import ScheduleComparable from '../../mixins/ScheduleComparable'
+import { dateFormat } from '../../filters'
+import { tableCell } from '../../vuex/getters'
 
 export default {
   mixins: [ScheduleComparable],
   vuex: {
     getters: { tableCell }
   },
+
+  components: { Item },
 
   props: {
     schedules: Array
