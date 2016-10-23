@@ -44,6 +44,10 @@ const state = {
     }
   ],
 
+  newSchedule: {
+    isNew: true
+  },
+
   table: {
     scrollLeft: 0,
     start: moment('2016-08-01').format(),
