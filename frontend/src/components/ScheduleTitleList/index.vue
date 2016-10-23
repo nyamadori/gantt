@@ -4,6 +4,7 @@
     <item
       v-for="schedule in schedules | orderBy compareSchedule"
       :schedule="schedule"></item>
+    <item :schedule="{ isNew: true }"></item>
   </div>
 </template>
 
