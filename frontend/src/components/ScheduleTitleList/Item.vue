@@ -1,9 +1,14 @@
 <template>
   <div class="schedule" :style="[scheduleStyle]">
-    <div class="title">{{ schedule.title }}</div>
-    <div class="period" v-if="!schedule.isNew">
-      {{ schedule.startOn | dateFormat 'YYYY/MM/DD' }} ―
-      {{ schedule.endOn | dateFormat 'YYYY/MM/DD' }}
+    <div v-if="schedule.isNew">
+      <input type="text" v-model="schedule.title"></input>
+    </div>
+    <div v-if="!schedule.isNew">
+      <div class="title">{{ schedule.title }}</div>
+      <div class="period" v-if="!schedule.isNew">
+        {{ schedule.startOn | dateFormat 'YYYY/MM/DD' }} ―
+        {{ schedule.endOn | dateFormat 'YYYY/MM/DD' }}
+      </div>
     </div>
   </div>
 </template>
