@@ -4,7 +4,7 @@
     <item
       v-for="schedule in schedules | orderBy compareSchedule"
       :schedule="schedule"></item>
-    <item :schedule="{ isNew: true }"></item>
+    <item :schedule="newSchedule"></item>
   </div>
 </template>
 
@@ -34,12 +34,12 @@
 import Item from './Item'
 import ScheduleComparable from '../../mixins/ScheduleComparable'
 import { dateFormat } from '../../filters'
-import { tableCell } from '../../vuex/getters'
+import { tableCell, newSchedule } from '../../vuex/getters'
 
 export default {
   mixins: [ScheduleComparable],
   vuex: {
-    getters: { tableCell }
+    getters: { tableCell, newSchedule }
   },
 
   components: { Item },

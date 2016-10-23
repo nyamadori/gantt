@@ -4,7 +4,7 @@
     <schedule-table-row
       v-for="schedule in schedules | orderBy compareSchedule"
       :schedule="schedule"></schedule-table-row>
-    <schedule-table-row :schedule="{ isNew: true, startOn: '', endOn: ''}">
+    <schedule-table-row :schedule="newSchedule">
     </schedule-table-row>
   </div>
 </template>
@@ -13,12 +13,12 @@
 import ScheduleTableRow from './ScheduleTableRow'
 import ScheduleTableHeader from './ScheduleTableHeader'
 import ScheduleComparable from '../mixins/ScheduleComparable'
-import { schedules } from '../vuex/getters'
+import { schedules, newSchedule } from '../vuex/getters'
 
 export default {
   mixins: [ ScheduleComparable ],
   vuex: {
-    getters: { schedules }
+    getters: { schedules, newSchedule }
   },
 
   components: {
