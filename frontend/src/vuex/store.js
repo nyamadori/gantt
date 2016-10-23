@@ -45,7 +45,9 @@ const state = {
   ],
 
   newSchedule: {
-    isNew: true
+    isNew: true,
+    startOn: null,
+    endOn: null
   },
 
   table: {
