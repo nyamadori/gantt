@@ -5,6 +5,9 @@ function getLength (s) {
 }
 
 function compareStartOn (a, b) {
+  if (!a.startOn && !b.startOn) return 0
+  if (!a.startOn) return Infinity
+  if (!b.startOn) return -Infinity
   const aStart = new Date(a.startOn)
   const bStart = new Date(b.startOn)
   return aStart - bStart

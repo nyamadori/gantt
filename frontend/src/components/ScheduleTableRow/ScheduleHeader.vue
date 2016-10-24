@@ -6,7 +6,7 @@
           type="text"
           v-model="currentSchedule.title"
           placeholder="新規タスク名"
-          @keyup.enter="createSchedule"></input>
+          @keypress.enter="createSchedule"></input>
       </div>
     </template>
 
@@ -87,7 +87,7 @@ export default {
   z-index: 200;
   justify-content: center;
   flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.95);
+  line-height: 1;
 }
 
 .header .title {
