@@ -1,7 +1,6 @@
 <template>
   <div class="gantt-chart">
-    <schedule-title-list :schedules="schedules"></schedule-title-list>
-    <schedule-table :schedule="schedules" @scroll="onScroll"></schedule-table>
+    <schedule-table v-ref:table :schedule="schedules" @scroll="onScroll"></schedule-table>
   </div>
 </template>
 
@@ -14,7 +13,6 @@
 .schedule-table {
   position: absolute;
   width: 100%;
-  padding-left: 200px;
   overflow: scroll;
   height: 100%;
 }
@@ -26,13 +24,11 @@
 
 <script>
 import ScheduleTable from './ScheduleTable'
-import ScheduleTitleList from './ScheduleTitleList'
 import { schedules, table } from '../vuex/getters'
 import { setTable } from '../vuex/actions'
 
 export default {
   components: {
-    ScheduleTitleList,
     ScheduleTable
   },
 
@@ -41,9 +37,29 @@ export default {
     actions: { setTable }
   },
 
+  ready () {
+    window.addEventListener('resize', this.onResize.bind(this))
+    this.updateTableWidth()
+  },
+
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResize)
+  },
+
   methods: {
+    updateTableWidth () {
+      this.setTable(
+        this.table,
+        'width',
+        parseInt(window.getComputedStyle(document.body, null).width))
+    },
+
     onScroll (e) {
       this.setTable(this.table, 'scrollLeft', e.target.scrollLeft)
+    },
+
+    onResize () {
+      this.updateTableWidth()
     }
   }
 }

@@ -1,12 +1,13 @@
 <template>
   <div
-    class="schedule-table-row"
+    class="period-editor"
     v-el:container
-    :style="[rowStyle]"
     @mousemove="onMouseMove"
     @click="onClick"
+    @mouseover="onMouseOver"
+    @mouseout="onMouseOut"
   >
-    <div v-if="!currentSchedule.isNew">
+    <template v-if="currentSchedule.status == 'periodSetted'">
       <schedule-table-handle
         :date="currentSchedule.startOn"
         @move="onMoveLeftHandle"></schedule-table-handle>
@@ -24,20 +25,20 @@
         :date="currentSchedule.endOn"
         :scale-base="'cell'"
         @move="onMoveRightHandle"></schedule-table-handle>
-    </div>
+    </template>
 
-    <div v-if="currentSchedule.isNew">
+    <template v-if="currentSchedule.status == 'periodUnSetted' && mouseHovering">
       <schedule-table-handle
+        class="edit-handle"
         v-if="currentSchedule.startOn"
-        :date="currentSchedule.startOn"
-        :style="{ 'background-color': '#000' }"></schedule-table-handle>
+        :date="currentSchedule.startOn"></schedule-table-handle>
       <schedule-table-handle
+        class="edit-handle"
         v-if="currentSchedule.endOn"
-        :date="currentSchedule.endOn"
-        :style="{ 'background-color': '#000' }"></schedule-table-handle>
-    </div>
+        :date="currentSchedule.endOn"></schedule-table-handle>
+    </template>
 
-    <div class="schedule-table-cells">
+    <div class="schedule-table-cells" v-if="currentSchedule.status !== 'new'">
       <div v-for="(key, days) in tableHeaders" class="cell month-cell">
         <div v-for="day in days" class="cell day-cell" :style="[cellStyle]"></div>
       </div>
@@ -47,42 +48,33 @@
 
 <script>
 import moment from 'moment'
-import ScheduleTableHandle from './ScheduleTableHandle'
-import ScheduleComparable from '../mixins/ScheduleComparable'
-import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
-import { tableLength, tableHeaders, tableCell, table } from '../vuex/getters'
-import { setSchedule, addSchedule } from '../vuex/actions'
+import ScheduleTableHandle from '../ScheduleTableHandle'
+import ScheduleComparable from '../../mixins/ScheduleComparable'
+import ScheduleMeasurement from '../../mixins/ScheduleMeasurement'
+import { tableHeaders, tableCell, table } from '../../vuex/getters'
+import { setSchedule } from '../../vuex/actions'
 
 export default {
   mixins: [ScheduleComparable, ScheduleMeasurement],
-  name: 'schedule-table-row',
-
-  components: {
-    ScheduleTableHandle
-  },
-
+  components: { ScheduleTableHandle },
   vuex: {
-    getters: { tableLength, tableHeaders, tableCell, table },
-    actions: { setSchedule, addSchedule }
+    getters: { tableHeaders, tableCell, table },
+    actions: { setSchedule }
   },
 
   props: {
-    schedule: Object
+    schedule: {
+      type: Object,
+      required: true
+    }
   },
 
   data () {
     return {
       scheduleBase: Object.assign({}, this.schedule),
-      createStatus: 'startOn' // 'startOn' -> 'endOn' -> finished
+      createStatus: 'startOn',
+      mouseHovering: false
     }
-  },
-
-  ready () {
-    window.addEventListener('keyup', this.onWindowKeyUp.bind(this))
-  },
-
-  beforeDestroy () {
-    window.removeEventListener(this.onWindowKeyUp)
   },
 
   computed: {
@@ -96,11 +88,8 @@ export default {
       }
     },
 
-    rowStyle () {
-      return {
-        width: this.tableLength * this.tableCell.width + 'px',
-        height: this.tableCell.height + 'px'
-      }
+    periodUnSetted () {
+      return !this.currentSchedule.startOn || !this.currentSchedule.endOn
     },
 
     cellStyle () {
@@ -117,20 +106,19 @@ export default {
     }
   },
 
+  ready () {
+    window.addEventListener('keyup', this.onWindowKeyUp.bind(this))
+  },
+
+  beforeDestroy () {
+    window.removeEventListener(this.onWindowKeyUp)
+  },
+
   methods: {
-    createSchedule () {
-      const newSchedule = Object.assign({}, this.currentSchedule)
-      newSchedule.isNew = false
-      this.createStatus = 'startOn'
-      this.currentSchedule.startOn = null
-      this.currentSchedule.endOn = null
-
-      this.addSchedule(newSchedule)
-    },
-
     update () {
       this.setSchedule(this.schedule, 'startOn', this.currentSchedule.startOn)
       this.setSchedule(this.schedule, 'endOn', this.currentSchedule.endOn)
+      this.setSchedule(this.schedule, 'status', this.currentSchedule.status)
     },
 
     onMoveLeftHandle (date) {
@@ -157,7 +145,7 @@ export default {
     },
 
     onMouseMove (e) {
-      if (!this.currentSchedule.isNew) return
+      if (!this.schedule.status === 'periodUnSetted') return
 
       const x = e.clientX - this.$els.container.offsetLeft + this.table.scrollLeft
 
@@ -172,7 +160,7 @@ export default {
     },
 
     onClick (e) {
-      if (!this.schedule.isNew) return
+      if (!this.schedule.status === 'periodUnSetted') return
 
       switch (this.createStatus) {
         case 'startOn':
@@ -180,13 +168,10 @@ export default {
           break
         case 'endOn':
           this.createStatus = 'finished'
-          this.createSchedule()
+          this.currentSchedule.status = 'periodSetted'
+          this.update()
           break
       }
-    },
-
-    onMouseUp (e) {
-      console.log(e.target)
     },
 
     onWindowKeyUp (e) {
@@ -198,17 +183,23 @@ export default {
     onEscape (e) {
       this.createStatus = 'startOn'
       this.currentSchedule.endOn = null
+    },
+
+    onMouseOut (e) {
+      this.mouseHovering = false
+    },
+
+    onMouseOver (e) {
+      this.mouseHovering = true
     }
   }
 }
 </script>
 
 <style scoped>
-.schedule-table-row {
+.period-editor {
   display: flex;
   position: relative;
-  line-height: 1;
-  border-bottom: 1px solid #ddd;
 }
 
 .schedule-table-cells, .cell {
@@ -248,8 +239,24 @@ export default {
   background-color: rgba(69, 133, 162, 0.7);
 }
 
-.title {
+.schedule-table-ribbon .inner > .title {
   line-height: 1;
   word-break: keep-all;
+}
+
+.edit-handle {
+  width: 2px;
+  background-color: transparent;;
+}
+
+.edit-handle:before {
+  display: block;
+  position: absolute;
+  left: -2px;
+  bottom: 0;
+  content: '';
+  border-left: transparent 6px solid;
+  border-right: transparent 6px solid;
+  border-bottom: 6px solid #000;
 }
 </style>

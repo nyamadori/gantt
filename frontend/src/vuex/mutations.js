@@ -1,5 +1,6 @@
 export default {
   ADD_SCHEDULE (state, schedule) {
+    schedule.id = state.uid++
     state.schedules.push(schedule)
   },
 
