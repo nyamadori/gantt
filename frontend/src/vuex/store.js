@@ -47,7 +47,8 @@ const state = {
   table: {
     scrollLeft: 0,
     start: moment('2016-08-01').format(),
-    end: moment('2016-10-01').format()
+    end: moment('2016-10-01').format(),
+    width: 0
   },
 
   tableCell: {
