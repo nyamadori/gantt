@@ -131,6 +131,7 @@ export default {
 
     headerStyle () {
       return {
+        left: this.table.scrollLeft + 'px',
         height: this.tableCell.height - 1 + 'px'
       }
     }
@@ -274,12 +275,12 @@ export default {
 
 .header {
   display: flex;
-  padding: 0 32px;
-  position: fixed;
+  padding: 0 16px;
+  position: absolute;
   z-index: 200;
   justify-content: center;
   flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
 .header > .title {

@@ -13,7 +13,6 @@
 .schedule-table {
   position: absolute;
   width: 100%;
-  padding-left: 200px;
   overflow: scroll;
   height: 100%;
 }
