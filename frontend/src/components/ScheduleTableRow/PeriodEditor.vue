@@ -27,13 +27,13 @@
 
     <template v-if="currentSchedule.status == 'periodUnSetted'">
       <schedule-table-handle
+        class="edit-handle"
         v-if="currentSchedule.startOn"
-        :date="currentSchedule.startOn"
-        :style="{ 'background-color': '#000' }"></schedule-table-handle>
+        :date="currentSchedule.startOn"></schedule-table-handle>
       <schedule-table-handle
+        class="edit-handle"
         v-if="currentSchedule.endOn"
-        :date="currentSchedule.endOn"
-        :style="{ 'background-color': '#000' }"></schedule-table-handle>
+        :date="currentSchedule.endOn"></schedule-table-handle>
     </template>
 
     <div class="schedule-table-cells" v-if="currentSchedule.status !== 'new'">
@@ -233,4 +233,19 @@ export default {
   word-break: keep-all;
 }
 
+.edit-handle {
+  width: 2px;
+  background-color: transparent;;
+}
+
+.edit-handle:before {
+  display: block;
+  position: absolute;
+  left: -2px;
+  bottom: 0;
+  content: '';
+  border-left: transparent 6px solid;
+  border-right: transparent 6px solid;
+  border-bottom: 6px solid #000;
+}
 </style>
