@@ -6,6 +6,14 @@
     @mousemove="onMouseMove"
     @click="onClick"
   >
+    <div class="header" :style="headerStyle">
+      <div class="title">{{ schedule.title }}</div>
+      <div class="period" v-if="!schedule.isNew">
+        {{ schedule.startOn | dateFormat 'YYYY/MM/DD' }} ―
+        {{ schedule.endOn | dateFormat 'YYYY/MM/DD' }}
+      </div>
+    </div>
+
     <div v-if="!currentSchedule.isNew">
       <schedule-table-handle
         :date="currentSchedule.startOn"
@@ -52,6 +60,7 @@ import ScheduleComparable from '../mixins/ScheduleComparable'
 import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
 import { tableLength, tableHeaders, tableCell, table } from '../vuex/getters'
 import { setSchedule, addSchedule } from '../vuex/actions'
+import { dateFormat } from '../filters'
 
 export default {
   mixins: [ScheduleComparable, ScheduleMeasurement],
@@ -59,6 +68,10 @@ export default {
 
   components: {
     ScheduleTableHandle
+  },
+
+  filters: {
+    dateFormat
   },
 
   vuex: {
@@ -113,6 +126,12 @@ export default {
     ribbonStyle () {
       return {
         width: this.scheduleWidth(this.currentSchedule) + 'px'
+      }
+    },
+
+    headerStyle () {
+      return {
+        height: this.tableCell.height - 1 + 'px'
       }
     }
   },
@@ -248,8 +267,29 @@ export default {
   background-color: rgba(69, 133, 162, 0.7);
 }
 
-.title {
+.schedule-table-ribbon .inner > .title {
   line-height: 1;
   word-break: keep-all;
+}
+
+.header {
+  display: flex;
+  padding: 0 32px;
+  position: fixed;
+  z-index: 200;
+  justify-content: center;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.header > .title {
+  font-size: 1.2rem;
+  margin-bottom: 3px;
+  color: #4a4a4a;
+}
+
+.header > .period {
+  font-size: 0.7rem;
+  color: #4a4a4a;
 }
 </style>
