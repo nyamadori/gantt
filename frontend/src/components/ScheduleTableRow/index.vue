@@ -15,7 +15,7 @@ import ScheduleHeader from './ScheduleHeader'
 import ScheduleComparable from '../../mixins/ScheduleComparable'
 import ScheduleMeasurement from '../../mixins/ScheduleMeasurement'
 import { tableLength, tableHeaders, tableCell, table } from '../../vuex/getters'
-import { setSchedule, addSchedule } from '../../vuex/actions'
+import { setSchedule } from '../../vuex/actions'
 import { dateFormat } from '../../filters'
 
 export default {
@@ -32,7 +32,7 @@ export default {
 
   vuex: {
     getters: { tableLength, tableHeaders, tableCell, table },
-    actions: { setSchedule, addSchedule }
+    actions: { setSchedule }
   },
 
   props: {
@@ -43,14 +43,6 @@ export default {
     return {
       createStatus: 'startOn' // 'startOn' -> 'endOn' -> finished
     }
-  },
-
-  ready () {
-    window.addEventListener('keyup', this.onWindowKeyUp.bind(this))
-  },
-
-  beforeDestroy () {
-    window.removeEventListener(this.onWindowKeyUp)
   },
 
   computed: {
@@ -75,17 +67,6 @@ export default {
 
     onMouseUp (e) {
       console.log(e.target)
-    },
-
-    onWindowKeyUp (e) {
-      if (e.key !== 'Escape') return
-
-      this.onEscape(e)
-    },
-
-    onEscape (e) {
-      this.createStatus = 'startOn'
-      this.currentSchedule.endOn = null
     }
   }
 }

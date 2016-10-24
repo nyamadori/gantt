@@ -5,7 +5,7 @@
     @mousemove="onMouseMove"
     @click="onClick"
   >
-    <div v-if="!currentSchedule.isNew">
+    <template v-if="currentSchedule.status == 'periodSetted'">
       <schedule-table-handle
         :date="currentSchedule.startOn"
         @move="onMoveLeftHandle"></schedule-table-handle>
@@ -23,9 +23,9 @@
         :date="currentSchedule.endOn"
         :scale-base="'cell'"
         @move="onMoveRightHandle"></schedule-table-handle>
-    </div>
+    </template>
 
-    <div v-if="currentSchedule.isNew">
+    <template v-if="currentSchedule.status == 'periodUnSetted'">
       <schedule-table-handle
         v-if="currentSchedule.startOn"
         :date="currentSchedule.startOn"
@@ -34,10 +34,9 @@
         v-if="currentSchedule.endOn"
         :date="currentSchedule.endOn"
         :style="{ 'background-color': '#000' }"></schedule-table-handle>
-    </div>
+    </template>
 
-    <!-- これはわけなくて良い -->
-    <div class="schedule-table-cells" v-if="!currentSchedule.isNew">
+    <div class="schedule-table-cells" v-if="currentSchedule.status !== 'new'">
       <div v-for="(key, days) in tableHeaders" class="cell month-cell">
         <div v-for="day in days" class="cell day-cell" :style="[cellStyle]"></div>
       </div>
@@ -70,7 +69,8 @@ export default {
 
   data () {
     return {
-      scheduleBase: Object.assign({}, this.schedule)
+      scheduleBase: Object.assign({}, this.schedule),
+      createStatus: 'startOn'
     }
   },
 
@@ -85,6 +85,10 @@ export default {
       }
     },
 
+    periodUnSetted () {
+      return !this.currentSchedule.startOn || !this.currentSchedule.endOn
+    },
+
     cellStyle () {
       return {
         width: this.tableCell.width + 'px',
@@ -97,6 +101,14 @@ export default {
         width: this.scheduleWidth(this.currentSchedule) + 'px'
       }
     }
+  },
+
+  ready () {
+    window.addEventListener('keyup', this.onWindowKeyUp.bind(this))
+  },
+
+  beforeDestroy () {
+    window.removeEventListener(this.onWindowKeyUp)
   },
 
   methods: {
@@ -129,7 +141,7 @@ export default {
     },
 
     onMouseMove (e) {
-      if (!this.currentSchedule.isNew) return
+      if (!this.schedule.status === 'periodUnSetted') return
 
       const x = e.clientX - this.$els.container.offsetLeft + this.table.scrollLeft
 
@@ -144,7 +156,7 @@ export default {
     },
 
     onClick (e) {
-      if (!this.schedule.isNew) return
+      if (!this.schedule.status === 'periodUnSetted') return
 
       switch (this.createStatus) {
         case 'startOn':
@@ -152,9 +164,21 @@ export default {
           break
         case 'endOn':
           this.createStatus = 'finished'
-          this.createSchedule()
+          this.currentSchedule.status = 'periodSetted'
+          this.update()
           break
       }
+    },
+
+    onWindowKeyUp (e) {
+      if (e.key !== 'Escape') return
+
+      this.onEscape(e)
+    },
+
+    onEscape (e) {
+      this.createStatus = 'startOn'
+      this.currentSchedule.endOn = null
     }
   }
 }

@@ -1,29 +1,35 @@
 <template>
   <div class="header" :style="headerStyle">
-    <div v-if="schedule.isNew">
-      <div class="title" v-if="schedule.isNew">
-        <input type="text" v-model="currentSchedule.title" placeholder="新規タスク名"></input>
+    <template v-if="schedule.status === 'new'">
+      <div class="title">
+        <input
+          type="text"
+          v-model="currentSchedule.title"
+          placeholder="新規タスク名"
+          @keyup.enter="createSchedule"></input>
       </div>
-    </div>
+    </template>
 
-    <div v-if="!schedule.isNew">
+    <template v-if="schedule.status !== 'new'">
       <div class="title">{{ schedule.title }}</div>
       <div class="period" v-if="!schedule.isNew">
         {{ schedule.startOn | dateFormat 'YYYY/MM/DD' }} ―
         {{ schedule.endOn | dateFormat 'YYYY/MM/DD' }}
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
 import { dateFormat } from '../../filters'
 import { table, tableCell } from '../../vuex/getters'
+import { addSchedule } from '../../vuex/actions'
 
 export default {
   filters: { dateFormat },
   vuex: {
-    getters: { table, tableCell }
+    getters: { table, tableCell },
+    actions: { addSchedule }
   },
 
   props: {
@@ -55,6 +61,18 @@ export default {
         left: this.table.scrollLeft + 'px',
         height: this.tableCell.height - 1 + 'px'
       }
+    }
+  },
+
+  methods: {
+    createSchedule () {
+      if (!this.currentSchedule.title) return
+
+      const newSchedule = Object.assign({}, this.currentSchedule)
+      newSchedule.isNew = false
+      newSchedule.status = 'periodUnSetted'
+      this.addSchedule(newSchedule)
+      this.currentSchedule.title = ''
     }
   }
 }
