@@ -12,7 +12,7 @@
 
     <template v-if="schedule.status !== 'new'">
       <div class="title">{{ schedule.title }}</div>
-      <div class="period" v-if="!schedule.isNew">
+      <div class="period" v-if="schedule.status === 'periodSetted'">
         {{ schedule.startOn | dateFormat 'YYYY/MM/DD' }} ―
         {{ schedule.endOn | dateFormat 'YYYY/MM/DD' }}
       </div>

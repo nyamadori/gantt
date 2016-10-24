@@ -115,6 +115,7 @@ export default {
     update () {
       this.setSchedule(this.schedule, 'startOn', this.currentSchedule.startOn)
       this.setSchedule(this.schedule, 'endOn', this.currentSchedule.endOn)
+      this.setSchedule(this.schedule, 'status', this.currentSchedule.status)
     },
 
     onMoveLeftHandle (date) {
