@@ -1,35 +1,10 @@
 <template>
   <div
-    class="schedule-table-row"
+    class="period-editor"
     v-el:container
-    :style="[rowStyle]"
     @mousemove="onMouseMove"
     @click="onClick"
   >
-    <!-- FIXME: この部分は間違いなくわけたい -->
-    <!-- FIXME: <header :schedule="currentSchedule"></header> -->
-    <div class="header" :style="headerStyle">
-      <div v-if="schedule.isNew">
-        <div class="title" v-if="schedule.isNew">
-          <input type="text" v-model="currentSchedule.title" placeholder="新規タスク名"></input>
-          <div class="period">
-            {{ currentSchedule.startOn | dateFormat 'YYYY/MM/DD' }} ―
-            {{ currentSchedule.endOn | dateFormat 'YYYY/MM/DD' }}
-          </div>
-        </div>
-      </div>
-
-      <div v-if="!schedule.isNew">
-        <div class="title">{{ schedule.title }}</div>
-        <div class="period" v-if="!schedule.isNew">
-          {{ schedule.startOn | dateFormat 'YYYY/MM/DD' }} ―
-          {{ schedule.endOn | dateFormat 'YYYY/MM/DD' }}
-        </div>
-      </div>
-    </div>
-
-    <!-- FIXME: この部分を子コンポーネントに分けたい -->
-    <!-- FIXME: <period-editor :schedule="currentSchedule"></period-editor> -->
     <div v-if="!currentSchedule.isNew">
       <schedule-table-handle
         :date="currentSchedule.startOn"
@@ -62,7 +37,7 @@
     </div>
 
     <!-- これはわけなくて良い -->
-    <div class="schedule-table-cells">
+    <div class="schedule-table-cells" v-if="!currentSchedule.isNew">
       <div v-for="(key, days) in tableHeaders" class="cell month-cell">
         <div v-for="day in days" class="cell day-cell" :style="[cellStyle]"></div>
       </div>
@@ -72,47 +47,31 @@
 
 <script>
 import moment from 'moment'
-import ScheduleTableHandle from './ScheduleTableHandle'
-import ScheduleComparable from '../mixins/ScheduleComparable'
-import ScheduleMeasurement from '../mixins/ScheduleMeasurement'
-import { tableLength, tableHeaders, tableCell, table } from '../vuex/getters'
-import { setSchedule, addSchedule } from '../vuex/actions'
-import { dateFormat } from '../filters'
+import ScheduleTableHandle from '../ScheduleTableHandle'
+import ScheduleComparable from '../../mixins/ScheduleComparable'
+import ScheduleMeasurement from '../../mixins/ScheduleMeasurement'
+import { tableHeaders, tableCell, table } from '../../vuex/getters'
+import { setSchedule } from '../../vuex/actions'
 
 export default {
   mixins: [ScheduleComparable, ScheduleMeasurement],
-  name: 'schedule-table-row',
-
-  components: {
-    ScheduleTableHandle
-  },
-
-  filters: {
-    dateFormat
-  },
-
+  components: { ScheduleTableHandle },
   vuex: {
-    getters: { tableLength, tableHeaders, tableCell, table },
-    actions: { setSchedule, addSchedule }
+    getters: { tableHeaders, tableCell, table },
+    actions: { setSchedule }
   },
 
   props: {
-    schedule: Object
+    schedule: {
+      type: Object,
+      required: true
+    }
   },
 
   data () {
     return {
-      scheduleBase: Object.assign({}, this.schedule),
-      createStatus: 'startOn' // 'startOn' -> 'endOn' -> finished
+      scheduleBase: Object.assign({}, this.schedule)
     }
-  },
-
-  ready () {
-    window.addEventListener('keyup', this.onWindowKeyUp.bind(this))
-  },
-
-  beforeDestroy () {
-    window.removeEventListener(this.onWindowKeyUp)
   },
 
   computed: {
@@ -123,13 +82,6 @@ export default {
 
       set (value) {
         this.scheduleBase = value
-      }
-    },
-
-    rowStyle () {
-      return {
-        width: this.tableLength * this.tableCell.width + 'px',
-        height: this.tableCell.height + 'px'
       }
     },
 
@@ -144,27 +96,10 @@ export default {
       return {
         width: this.scheduleWidth(this.currentSchedule) + 'px'
       }
-    },
-
-    headerStyle () {
-      return {
-        left: this.table.scrollLeft + 'px',
-        height: this.tableCell.height - 1 + 'px'
-      }
     }
   },
 
   methods: {
-    createSchedule () {
-      const newSchedule = Object.assign({}, this.currentSchedule)
-      newSchedule.isNew = false
-      this.createStatus = 'startOn'
-      this.currentSchedule.startOn = null
-      this.currentSchedule.endOn = null
-
-      this.addSchedule(newSchedule)
-    },
-
     update () {
       this.setSchedule(this.schedule, 'startOn', this.currentSchedule.startOn)
       this.setSchedule(this.schedule, 'endOn', this.currentSchedule.endOn)
@@ -220,32 +155,15 @@ export default {
           this.createSchedule()
           break
       }
-    },
-
-    onMouseUp (e) {
-      console.log(e.target)
-    },
-
-    onWindowKeyUp (e) {
-      if (e.key !== 'Escape') return
-
-      this.onEscape(e)
-    },
-
-    onEscape (e) {
-      this.createStatus = 'startOn'
-      this.currentSchedule.endOn = null
     }
   }
 }
 </script>
 
 <style scoped>
-.schedule-table-row {
+.period-editor {
   display: flex;
   position: relative;
-  line-height: 1;
-  border-bottom: 1px solid #ddd;
 }
 
 .schedule-table-cells, .cell {
@@ -290,33 +208,4 @@ export default {
   word-break: keep-all;
 }
 
-.header {
-  display: flex;
-  padding: 0 16px;
-  position: absolute;
-  width: 180px;
-  z-index: 200;
-  justify-content: center;
-  flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.95);
-}
-
-.header .title {
-  font-size: 1.2rem;
-  margin-bottom: 3px;
-  color: #4a4a4a;
-}
-
-.header .title input {
-  display: inline-block;
-  font-size: 1.2rem;
-  border-style: none;
-  padding: 0;
-  width: 100%;
-}
-
-.header .period {
-  font-size: 0.7rem;
-  color: #4a4a4a;
-}
 </style>
