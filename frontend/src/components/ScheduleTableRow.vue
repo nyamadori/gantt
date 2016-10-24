@@ -6,6 +6,8 @@
     @mousemove="onMouseMove"
     @click="onClick"
   >
+    <!-- FIXME: この部分は間違いなくわけたい -->
+    <!-- FIXME: <header :schedule="currentSchedule"></header> -->
     <div class="header" :style="headerStyle">
       <div v-if="schedule.isNew">
         <div class="title" v-if="schedule.isNew">
@@ -26,6 +28,8 @@
       </div>
     </div>
 
+    <!-- FIXME: この部分を子コンポーネントに分けたい -->
+    <!-- FIXME: <period-editor :schedule="currentSchedule"></period-editor> -->
     <div v-if="!currentSchedule.isNew">
       <schedule-table-handle
         :date="currentSchedule.startOn"
@@ -57,6 +61,7 @@
         :style="{ 'background-color': '#000' }"></schedule-table-handle>
     </div>
 
+    <!-- これはわけなくて良い -->
     <div class="schedule-table-cells">
       <div v-for="(key, days) in tableHeaders" class="cell month-cell">
         <div v-for="day in days" class="cell day-cell" :style="[cellStyle]"></div>
