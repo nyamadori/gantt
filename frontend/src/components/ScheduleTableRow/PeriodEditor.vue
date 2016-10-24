@@ -4,6 +4,8 @@
     v-el:container
     @mousemove="onMouseMove"
     @click="onClick"
+    @mouseover="onMouseOver"
+    @mouseout="onMouseOut"
   >
     <template v-if="currentSchedule.status == 'periodSetted'">
       <schedule-table-handle
@@ -25,7 +27,7 @@
         @move="onMoveRightHandle"></schedule-table-handle>
     </template>
 
-    <template v-if="currentSchedule.status == 'periodUnSetted'">
+    <template v-if="currentSchedule.status == 'periodUnSetted' && mouseHovering">
       <schedule-table-handle
         class="edit-handle"
         v-if="currentSchedule.startOn"
@@ -70,7 +72,8 @@ export default {
   data () {
     return {
       scheduleBase: Object.assign({}, this.schedule),
-      createStatus: 'startOn'
+      createStatus: 'startOn',
+      mouseHovering: false
     }
   },
 
@@ -180,6 +183,14 @@ export default {
     onEscape (e) {
       this.createStatus = 'startOn'
       this.currentSchedule.endOn = null
+    },
+
+    onMouseOut (e) {
+      this.mouseHovering = false
+    },
+
+    onMouseOver (e) {
+      this.mouseHovering = true
     }
   }
 }
